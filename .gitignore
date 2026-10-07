@@ -1,0 +1,45 @@
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# OS & System files
+desktop.ini
+Thumbs.db
+.DS_Store
+*.lnk
+
+# Tooling, IDE & Agent worktrees/cache
+.kilo/
+.gemini/
+__pycache__/
+*.py[cod]
+*$py.class
+node_modules/
+dist/
+build/
+
+# Campaign outputs & generated media renders
+**/outputs/
+**/output/
+**/render/
+**/renders/
+**/_qc/
+
+# Video & Heavy Media files
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.flv
+*.wmv
+*.wav
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z

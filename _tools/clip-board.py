@@ -65,6 +65,7 @@ for c in data.get("clips", []):
         "render_s": c.get("render_s", ""), "use_s": f"{use_s:g}" if use_s else "", "status": status,
         "image": first, "image_caption": os.path.basename(c.get("first_frame", "")),
         "image_name": _board.jpg_name(ff) if first else "",
+        "image_abs": os.path.abspath(ff) if first else "", "out_abs": os.path.abspath(P(c["out"])) if c.get("out") else "",
         "prompts": [("Prompt", c.get("prompt_en", ""), c.get("prompt_vi", ""))],
         "line_en": c.get("line_en", ""), "line_vi": c.get("line_vi", ""), "onscreen": c.get("onscreen", ""), "notes_vi": c.get("notes_vi", ""),
         "heard_html": heard_html, "frames_html": frames_html, "out": c.get("out", ""), "checks": checks, "wps": data.get("wps"),
@@ -73,7 +74,7 @@ for c in data.get("clips", []):
 ch = data.get("character") or {}
 ch_imgs = [(_board.full_uri(Image.open(P(im))), os.path.basename(im), _board.jpg_name(im)) for im in ch.get("images", []) if os.path.exists(P(im))]
 page = _board.page("Bàn giao + duyệt clip", data.get("campaign", ""), rows, top_html=_board.character_html(ch, ch_imgs),
-    safe=_board.safe_zone(data.get("platform")), ratio=data.get("ratio") or "9:16", duration=data.get("duration"), howto=" · ".join(
+    safe=_board.safe_zone(data.get("platform")), ratio=data.get("ratio") or "9:16", duration=data.get("duration"), camp_abs=os.path.abspath(CAMP), howto=" · ".join(
     x for x in (data.get("title", ""), data.get("howto", "")) if x))
 dst = os.path.join(CAMP, "outputs", "review", "clip-board.html")
 os.makedirs(os.path.dirname(dst), exist_ok=True)

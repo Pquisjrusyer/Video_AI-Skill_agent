@@ -1,7 +1,7 @@
 #!/bin/sh
 # Popup "gọi hồn provider" — từng bước: chọn nhà → đã có key chưa? → (hướng dẫn lấy key + nút mở trang) → nhập key.
-# gen-image.py tự gọi khi API lỗi; skill goi-hon gọi khi user đọc thần chú.
-# Dùng: sh _tools/pick-provider.sh image "câu thần chú / lý do" ["openai,gemini" = nhà loại khỏi danh sách]
+# gen-image / gen-voice / gen-music / gen-video tự gọi khi API lỗi; skill goi-hon gọi khi user đọc thần chú.
+# Dùng: sh _tools/pick-provider.sh image|voice|music|video "câu thần chú / lý do" ["openai,gemini" = nhà loại khỏi danh sách]
 #   → lưu key vào ~/.config/ai-studio/.env (ngoài project, không in ra); nhà tự thêm → providers-custom.json;
 #     tuỳ chọn đặt làm mặc định (prefs.env). In tên nhà đã chọn ở dòng cuối. Huỷ / không mở được popup → exit 1.
 # Dữ liệu nhà cung cấp + hướng dẫn lấy key: _tools/providers.json.
@@ -24,8 +24,16 @@ if command -v osascript >/dev/null 2>&1; then
       ITEMS=$(printf %s "$LIST" | cut -f2 | sed 's/"/\\"/g; s/^/"/; s/$/"/' | paste -sd, -)
       PICK=$(osa "choose from list {$ITEMS} with prompt \"$(esc "$REASON") — Bước 1/3: chọn nhà cung cấp\" with title \"🔮 AI Video — gọi hồn provider\"")
       [ -z "$PICK" ] || [ "$PICK" = false ] && { echo "Đã huỷ" >&2; exit 1; }
-      P=$(printf %s "$LIST" | awk -F'\t' -v l="$PICK" '$2==l{print $1; exit}'); STEP=have ;;
+      P=$(printf %s "$LIST" | awk -F'\t' -v l="$PICK" '$2==l{print $1; exit}')
+      SAVED=$(printf %s "$LIST" | awk -F'\t' -v l="$PICK" '$2==l{print $3; exit}'); STEP=have ;;
     have)
+      if [ "$SAVED" = 1 ]; then  # máy đã lưu key (dùng chung mọi dự án) → dùng luôn
+        B=$(osa "button returned of (display dialog \"Máy đã lưu key của $P (dùng chung mọi dự án).\" buttons {\"‹ Quay lại\", \"Nhập key mới\", \"Dùng key đã lưu ✓\"} default button 3 with title \"🔮 gọi hồn provider\")")
+        case "$B" in "Dùng key"*)
+            D=$(osa 'button returned of (display dialog "Dùng nhà cung cấp này làm mặc định từ giờ?" buttons {"Chỉ lần này", "Làm mặc định"} default button 1)')
+            [ "$D" = "Làm mặc định" ] && OUT="PROVIDER=$P${NL}DEFAULT=1" || OUT="PROVIDER=$P${NL}DEFAULT=0"; break ;;
+          "Nhập key mới") STEP=input; continue ;; "‹"*) STEP=pick; continue ;; *) echo "Đã huỷ" >&2; exit 1 ;; esac
+      fi
       B=$(osa "button returned of (display dialog \"Bước 2/3 — Bạn đã có key của $P chưa?\" buttons {\"‹ Quay lại\", \"Chưa / chưa biết lấy ở đâu\", \"Có rồi › nhập key\"} default button 3 with title \"🔮 gọi hồn provider\")")
       case "$B" in "Có rồi"*) STEP=input ;; "Chưa"*) STEP=guide ;; "‹"*) STEP=pick ;; *) echo "Đã huỷ" >&2; exit 1 ;; esac ;;
     guide)
@@ -88,5 +96,6 @@ for line in $OUT; do
 done
 IFS=$OLDIFS
 [ -n "$P" ] || { echo "Đã huỷ" >&2; exit 1; }
-[ "$DEF" = 1 ] && sh "$DIR/set-prefs.sh" "IMAGE_PROVIDER=$P" >/dev/null
+case "$TASK" in voice) PK=VO_PROVIDER ;; music) PK=MUSIC_PROVIDER ;; video) PK=VIDEO_PROVIDER ;; *) PK=IMAGE_PROVIDER ;; esac
+[ "$DEF" = 1 ] && sh "$DIR/set-prefs.sh" "$PK=$P" >/dev/null
 echo "$P"

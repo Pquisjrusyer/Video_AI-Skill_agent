@@ -26,6 +26,8 @@ Output: 1 complete video, assembled with `<OffthreadVideo>` (importing existing 
 ## Mandatory reading order
 
 ### Step 1 — always read first → [remotion-setup.md](references/remotion-setup.md)
+
+> **Default path:** write `campaigns/<c>/remotion-project/timeline.json` (data only) and render with `python3 _tools/remotion.py check | stills | review | final campaigns/<c>`. Shared Remotion install, reused across campaigns — never `npm install` per campaign, never hand-write Root/Assembly unless a scene needs a custom `.tsx` (put it in `remotion-project/src/`).
 How to initialize the project, the file structure in `remotion-project/`, how to import images/clips/audio from the campaign's `outputs/images/`, `outputs/videos/` and `outputs/audio/`.
 
 ### Step 2 — always read second → [animation-patterns.md](references/animation-patterns.md)
@@ -80,4 +82,4 @@ Full process + rules: `_workflows/ugc-workflow.md` Steps 3.2, 7, 8.
 - Before rendering the final version (Mode B) — present the plan (clip order, transitions, total duration) and wait for confirmation; do not overwrite existing files in `outputs/final/` on your own
 - If an AI-VIDEO clip required for assembly is missing (not yet rendered by the user from the 4C/4E card) — stop and report; do not substitute a placeholder on your own
 - If the storyboard requires a voiceover but there is no source audio file yet — stop and ask (Remotion does not generate speech); do not skip it or replace it with text-only on your own
-- Always install/build in a temp directory, do NOT run `npm install` directly in `campaigns/[campaign]/remotion-project/` (see the reason in `remotion-setup.md`) — only sync `src/` + `package.json` back there after rendering is done
+- Use the shared install via `_tools/remotion.py` (no per-campaign `npm install`). Never run `npm install` in `campaigns/[campaign]/remotion-project/` (see the reason in `remotion-setup.md`) — only sync `src/` + `package.json` back there after rendering is done

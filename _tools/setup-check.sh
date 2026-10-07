@@ -30,6 +30,8 @@ else
 fi
 command -v npx >/dev/null 2>&1 || missing="$missing
 - Node.js/npx: THIẾU (cần cho cổng 3 — dựng Remotion)"
+command -v npx >/dev/null 2>&1 && [ ! -f "$HOME/.config/ai-studio/remotion-base/.installed" ] && missing="$missing
+- Bộ Remotion dùng chung: chưa cài (tự cài ở lần dựng đầu, hoặc: python3 _tools/remotion.py ensure)"
 command -v ffmpeg >/dev/null 2>&1 || missing="$missing
 - ffmpeg: THIẾU (cần cho cổng 2–3 — xem/cắt khung clip)"
 [ -s "$PREFS" ] || missing="$missing
@@ -48,6 +50,18 @@ if grep -q '^IMAGE_TOOL=claude' "$PREFS" 2>/dev/null; then
 fi
 grep -q '^VO_TOOL=openai' "$PREFS" 2>/dev/null && [ -z "$(val OPENAI_API_KEY)" ] && missing="$missing
 - OPENAI_API_KEY: THIẾU (đã chọn giọng đọc OpenAI TTS)"
+# Giọng / nhạc / video qua API (gen-voice / gen-music / gen-video): key của nhà đang chọn
+for spec in "VO_TOOL:VO_PROVIDER:elevenlabs:voice" "MUSIC_TOOL:MUSIC_PROVIDER:elevenlabs_music:music" "VIDEO_TOOL:VIDEO_PROVIDER:fal_video:video"; do
+  tool=${spec%%:*}; rest=${spec#*:}; pk=${rest%%:*}; rest=${rest#*:}; dflt=${rest%%:*}; task=${rest#*:}
+  grep -q "^$tool=api" "$PREFS" 2>/dev/null || continue
+  pv=$(sed -n "s/^$pk=//p" "$PREFS" | tail -1); pv=${pv:-$dflt}
+  case "$pv" in
+    elevenlabs*) need=ELEVENLABS_API_KEY ;; gemini*) need=GEMINI_API_KEY ;; openai*) need=OPENAI_API_KEY ;;
+    cloudflare*) need="CLOUDFLARE_ACCOUNT_ID CLOUDFLARE_API_TOKEN" ;; fal*) need=FAL_KEY ;; replicate*) need=REPLICATE_API_TOKEN ;; *) need="" ;;
+  esac
+  for k in $need; do [ -n "$(val "$k")" ] || missing="$missing
+- $k: THIẾU (đã chọn $task qua API, nhà $pv — popup: sh _tools/pick-provider.sh $task)"; done
+done
 # TopView / Higgsfield: kết nối API → cần key (nhập qua popup set-key.sh); MCP → đăng nhập connector, không kiểm được ở đây.
 for svc in TOPVIEW HIGGSFIELD; do
   lower=$(echo "$svc" | tr 'A-Z' 'a-z')

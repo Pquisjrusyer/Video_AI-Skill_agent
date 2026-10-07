@@ -72,7 +72,7 @@ for s in scenes:
     rows.append({"id": s.get("id", ""), "time": s.get("time", ""), "purpose": s.get("purpose", ""), "tool": "Bản dựng",
                  "image": _board.img_uri(imgs[-1][1]) if imgs else "", "image_caption": f"giữa cảnh · {imgs[-1][0]:.1f}s" if imgs else "",
                  "line_en": line, "line_vi": s.get("line_vi") or s.get("vo_vi", ""), "onscreen": s.get("onscreen", ""),
-                 "heard_html": heard_html, "frames_html": frames, "checks": checks, "out": os.path.relpath(video, CAMP).replace("\\", "/"),
+                 "heard_html": heard_html, "frames_html": frames, "checks": checks, "out": os.path.relpath(video, CAMP).replace("\\", "/"), "out_abs": os.path.abspath(video),
                  "wps": data.get("wps")})
     bad = [t for ok, t in checks if not ok]
     summary.append(f"{s.get('id')}: " + ("LỖI: " + "; ".join(bad) if bad else "OK"))
@@ -82,7 +82,7 @@ extra = f"<p class='muted'>Lời ngoài mọi cảnh: “{' '.join(w.word.strip(
 total = scenes and rng(scenes[-1].get("time"))
 head = f"Video: {os.path.basename(video)} · {m['w']}×{m['h']} · {dur:.2f}s" + (f" (script {total[1]:g}s)" if total else "")
 page = _board.page("Review bản dựng", campaign, rows, howto=head, extra_html=extra,
-                   safe=_board.safe_zone(data.get("platform")), ratio=data.get("ratio") or "9:16", duration=dur)
+                   safe=_board.safe_zone(data.get("platform")), ratio=data.get("ratio") or "9:16", duration=dur, camp_abs=os.path.abspath(CAMP))
 dst = J("outputs", "review", "review-board.html"); os.makedirs(os.path.dirname(dst), exist_ok=True)
 open(dst, "w", encoding="utf-8").write(page)
 print(dst); print(head); print("\n".join(summary))

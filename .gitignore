@@ -43,3 +43,7 @@ build/
 *.tar.gz
 *.rar
 *.7z
+
+# Campaign thật: không push — chỉ giữ thư mục mẫu _template
+campaigns/*
+!campaigns/_template/

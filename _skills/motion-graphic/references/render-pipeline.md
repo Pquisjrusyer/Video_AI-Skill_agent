@@ -10,23 +10,15 @@
 
 Set `width`/`height`/`fps` in `<Composition>` (Root.tsx) to match the placement the campaign brief requires — do not render 1 ratio and then crop by hand, unless intentional.
 
-## Render commands
+## Render commands (bộ dùng chung — `remotion-setup.md`)
 
-Render 1 scene separately for review:
 ```bash
-npx remotion render src/index.ts Scene1KenBurns out/scene1-review.mp4
-# then copy to campaigns/[campaign]/outputs/review/
+python3 _tools/remotion.py check  campaigns/<c>                     # kiểm timeline.json + đủ file
+python3 _tools/remotion.py stills campaigns/<c>                     # khung giữa mỗi cảnh + ảnh ghép (1 lần đóng gói, ~20s)
+python3 _tools/remotion.py review campaigns/<c>                     # outputs/review/<code>_review_vN.mp4
+python3 _tools/remotion.py final  campaigns/<c> --name <tên>.mp4 [--extra 4:5]   # outputs/final/ + -14 LUFS + bản phụ
 ```
-
-Render the final assembly:
-```bash
-npx remotion render src/index.ts FinalAssembly out/final.mp4
-```
-
-Render with custom props (e.g. different headline text for an A/B test):
-```bash
-npx remotion render src/index.ts FinalAssembly out/final-v2.mp4 --props='{"headline":"30% off today"}'
-```
+Kích thước theo `width` / `height` trong `timeline.json`; bản phụ khác tỷ lệ dùng `--extra` (không crop tay). Không gọi `npx remotion render / still` từng khung — mỗi lệnh đóng gói lại từ đầu.
 
 ## Checklist before exporting the final version
 

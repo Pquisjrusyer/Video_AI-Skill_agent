@@ -1,58 +1,369 @@
 {
-  "_doc": "Danh sách nhà cung cấp ảnh — gen-image.py, pick-provider.sh, provider-dialog.ps1 cùng đọc. Thêm nhà mới có adapter riêng: thêm ở đây + hàm gen_<tên> trong gen-image.py. Nhà tương thích OpenAI không cần code: user thêm qua mục 'Khác — tự thêm' trong popup (lưu ở ~/.config/ai-studio/providers-custom.json).",
+  "_doc": "Danh sách nhà cung cấp ảnh / giọng đọc / nhạc / video — gen-image.py, pick-provider.sh, provider-dialog.ps1 cùng đọc. Thêm nhà mới có adapter riêng: thêm ở đây + hàm gen_<tên> trong gen-image.py. Nhà tương thích OpenAI không cần code: user thêm qua mục 'Khác — tự thêm' trong popup (lưu ở ~/.config/ai-studio/providers-custom.json). Nhóm: image (gen-image.py) · voice (gen-voice.py) · music (gen-music.py) · video (gen-video.py).",
   "image": [
-    {"id": "cloudflare", "label": "Cloudflare FLUX.2 klein — MIỄN PHÍ ~200 ảnh/ngày, có ảnh tham chiếu", "free": true, "refs": true,
-     "keys": [{"env": "CLOUDFLARE_API_TOKEN", "label": "API Token", "hidden": true},
-              {"env": "CLOUDFLARE_ACCOUNT_ID", "label": "Account ID", "hidden": false}],
-     "url": "https://dash.cloudflare.com/profile/api-tokens",
-     "guide": ["Vào dash.cloudflare.com → đăng ký tài khoản miễn phí (không cần thẻ).",
-               "Account ID: ở trang chủ dashboard, bấm vào tài khoản → Account ID nằm ở cột phải (hoặc trang Workers AI). Bấm copy.",
-               "API Token: My Profile → API Tokens → Create Token → chọn mẫu \"Workers AI\" → Continue to summary → Create Token.",
-               "Copy token ngay (chỉ hiện 1 lần). Bạn sẽ dán cả Token và Account ID ở bước sau."]},
-    {"id": "pollinations", "label": "Pollinations — MIỄN PHÍ, không ảnh tham chiếu", "free": true, "refs": false,
-     "keys": [{"env": "POLLINATIONS_KEY", "label": "Secret key (sk_...)", "hidden": true}],
-     "url": "https://enter.pollinations.ai",
-     "guide": ["Vào enter.pollinations.ai → đăng nhập bằng GitHub hoặc Google (miễn phí).",
-               "Mở mục Keys → tạo Secret key mới (bắt đầu bằng sk_).",
-               "Copy key. Lưu ý: nhà này không nhận ảnh tham chiếu, hợp làm ảnh minh hoạ storyboard."]},
-    {"id": "huggingface", "label": "Hugging Face FLUX schnell — MIỄN PHÍ credit/tháng, không ảnh tham chiếu", "free": true, "refs": false,
-     "keys": [{"env": "HF_TOKEN", "label": "Access token (hf_...)", "hidden": true}],
-     "url": "https://huggingface.co/settings/tokens",
-     "guide": ["Vào huggingface.co → đăng ký tài khoản miễn phí.",
-               "Settings → Access Tokens → Create new token → loại Fine-grained.",
-               "Tick quyền \"Make calls to Inference Providers\" → Create token.",
-               "Copy token (bắt đầu bằng hf_). Credit miễn phí reset mỗi tháng."]},
-    {"id": "openai", "label": "OpenAI GPT Image — trả phí, chất lượng cao nhất", "free": false, "refs": true,
-     "keys": [{"env": "OPENAI_API_KEY", "label": "API key (sk-...)", "hidden": true}],
-     "url": "https://platform.openai.com/api-keys",
-     "guide": ["Vào platform.openai.com/api-keys → đăng nhập.",
-               "Create new secret key → đặt tên → Create → copy (bắt đầu bằng sk-).",
-               "Tài khoản cần nạp credit (Settings → Billing) và xác minh tổ chức (Settings → Organization → Verify) để dùng model ảnh.",
-               "Nên đặt giới hạn chi tiêu: Settings → Limits."]},
-    {"id": "gemini", "label": "Google Gemini (Nano Banana) — trả phí", "free": false, "refs": true,
-     "keys": [{"env": "GEMINI_API_KEY", "label": "API key (AIza...)", "hidden": true}],
-     "url": "https://aistudio.google.com/apikey",
-     "guide": ["Vào aistudio.google.com/apikey → đăng nhập Google.",
-               "Create API key → chọn (hoặc tạo) 1 Google Cloud project → copy key (bắt đầu bằng AIza).",
-               "Gen ảnh qua API cần bật thanh toán cho project đó (gói miễn phí không gen ảnh)."]},
-    {"id": "fal", "label": "fal.ai (Nano Banana) — trả phí", "free": false, "refs": true,
-     "keys": [{"env": "FAL_KEY", "label": "API key", "hidden": true}],
-     "url": "https://fal.ai/dashboard/keys",
-     "guide": ["Vào fal.ai → đăng nhập → Dashboard → Keys.",
-               "Add key → scope API → Create → copy key (chỉ hiện 1 lần).",
-               "Nạp credit ở Dashboard → Billing."]},
-    {"id": "replicate", "label": "Replicate (Nano Banana) — trả phí", "free": false, "refs": true,
-     "keys": [{"env": "REPLICATE_API_TOKEN", "label": "API token (r8_...)", "hidden": true}],
-     "url": "https://replicate.com/account/api-tokens",
-     "guide": ["Vào replicate.com → đăng nhập (GitHub).",
-               "Account → API tokens → Create token → copy (bắt đầu bằng r8_).",
-               "Thêm phương thức thanh toán ở Account → Billing."]},
-    {"id": "custom", "label": "Khác — tự thêm nhà cung cấp (API tương thích OpenAI)", "free": false, "refs": false,
-     "keys": [],
-     "url": "",
-     "guide": ["Dùng được với nhà nào có API ảnh tương thích OpenAI (endpoint /images/generations), VD Together AI, DeepInfra, OpenRouter, một số nhà châu Á.",
-               "Mở trang tài liệu API của nhà đó, tìm 3 thứ: Base URL (VD https://api.together.xyz/v1), tên model ảnh (VD black-forest-labs/FLUX.1-schnell), và API key.",
-               "Nếu nhà đó có cả /images/edits (sửa ảnh theo ảnh mẫu) thì tick \"Có ảnh tham chiếu\" ở bước sau.",
-               "Nhà không tương thích OpenAI → nhờ Claude viết thêm adapter trong _tools/gen-image.py."]}
+    {
+      "id": "cloudflare",
+      "label": "Cloudflare FLUX.2 klein — MIỄN PHÍ ~200 ảnh/ngày, có ảnh tham chiếu",
+      "free": true,
+      "refs": true,
+      "keys": [
+        {
+          "env": "CLOUDFLARE_API_TOKEN",
+          "label": "API Token",
+          "hidden": true
+        },
+        {
+          "env": "CLOUDFLARE_ACCOUNT_ID",
+          "label": "Account ID",
+          "hidden": false
+        }
+      ],
+      "url": "https://dash.cloudflare.com/profile/api-tokens",
+      "guide": [
+        "Vào dash.cloudflare.com → đăng ký tài khoản miễn phí (không cần thẻ).",
+        "Account ID: ở trang chủ dashboard, bấm vào tài khoản → Account ID nằm ở cột phải (hoặc trang Workers AI). Bấm copy.",
+        "API Token: My Profile → API Tokens → Create Token → chọn mẫu \"Workers AI\" → Continue to summary → Create Token.",
+        "Copy token ngay (chỉ hiện 1 lần). Bạn sẽ dán cả Token và Account ID ở bước sau."
+      ]
+    },
+    {
+      "id": "pollinations",
+      "label": "Pollinations — MIỄN PHÍ, không ảnh tham chiếu",
+      "free": true,
+      "refs": false,
+      "keys": [
+        {
+          "env": "POLLINATIONS_KEY",
+          "label": "Secret key (sk_...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://enter.pollinations.ai",
+      "guide": [
+        "Vào enter.pollinations.ai → đăng nhập bằng GitHub hoặc Google (miễn phí).",
+        "Mở mục Keys → tạo Secret key mới (bắt đầu bằng sk_).",
+        "Copy key. Lưu ý: nhà này không nhận ảnh tham chiếu, hợp làm ảnh minh hoạ storyboard."
+      ]
+    },
+    {
+      "id": "huggingface",
+      "label": "Hugging Face FLUX schnell — MIỄN PHÍ credit/tháng, không ảnh tham chiếu",
+      "free": true,
+      "refs": false,
+      "keys": [
+        {
+          "env": "HF_TOKEN",
+          "label": "Access token (hf_...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://huggingface.co/settings/tokens",
+      "guide": [
+        "Vào huggingface.co → đăng ký tài khoản miễn phí.",
+        "Settings → Access Tokens → Create new token → loại Fine-grained.",
+        "Tick quyền \"Make calls to Inference Providers\" → Create token.",
+        "Copy token (bắt đầu bằng hf_). Credit miễn phí reset mỗi tháng."
+      ]
+    },
+    {
+      "id": "openai",
+      "label": "OpenAI GPT Image — trả phí, chất lượng cao nhất",
+      "free": false,
+      "refs": true,
+      "keys": [
+        {
+          "env": "OPENAI_API_KEY",
+          "label": "API key (sk-...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://platform.openai.com/api-keys",
+      "guide": [
+        "Vào platform.openai.com/api-keys → đăng nhập.",
+        "Create new secret key → đặt tên → Create → copy (bắt đầu bằng sk-).",
+        "Tài khoản cần nạp credit (Settings → Billing) và xác minh tổ chức (Settings → Organization → Verify) để dùng model ảnh.",
+        "Nên đặt giới hạn chi tiêu: Settings → Limits."
+      ]
+    },
+    {
+      "id": "gemini",
+      "label": "Google Gemini (Nano Banana) — trả phí",
+      "free": false,
+      "refs": true,
+      "keys": [
+        {
+          "env": "GEMINI_API_KEY",
+          "label": "API key (AIza...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://aistudio.google.com/apikey",
+      "guide": [
+        "Vào aistudio.google.com/apikey → đăng nhập Google.",
+        "Create API key → chọn (hoặc tạo) 1 Google Cloud project → copy key (bắt đầu bằng AIza).",
+        "Gen ảnh qua API cần bật thanh toán cho project đó (gói miễn phí không gen ảnh)."
+      ]
+    },
+    {
+      "id": "fal",
+      "label": "fal.ai (Nano Banana) — trả phí",
+      "free": false,
+      "refs": true,
+      "keys": [
+        {
+          "env": "FAL_KEY",
+          "label": "API key",
+          "hidden": true
+        }
+      ],
+      "url": "https://fal.ai/dashboard/keys",
+      "guide": [
+        "Vào fal.ai → đăng nhập → Dashboard → Keys.",
+        "Add key → scope API → Create → copy key (chỉ hiện 1 lần).",
+        "Nạp credit ở Dashboard → Billing."
+      ]
+    },
+    {
+      "id": "replicate",
+      "label": "Replicate (Nano Banana) — trả phí",
+      "free": false,
+      "refs": true,
+      "keys": [
+        {
+          "env": "REPLICATE_API_TOKEN",
+          "label": "API token (r8_...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://replicate.com/account/api-tokens",
+      "guide": [
+        "Vào replicate.com → đăng nhập (GitHub).",
+        "Account → API tokens → Create token → copy (bắt đầu bằng r8_).",
+        "Thêm phương thức thanh toán ở Account → Billing."
+      ]
+    },
+    {
+      "id": "custom",
+      "label": "Khác — tự thêm nhà cung cấp (API tương thích OpenAI)",
+      "free": false,
+      "refs": false,
+      "keys": [],
+      "url": "",
+      "guide": [
+        "Dùng được với nhà nào có API ảnh tương thích OpenAI (endpoint /images/generations), VD Together AI, DeepInfra, OpenRouter, một số nhà châu Á.",
+        "Mở trang tài liệu API của nhà đó, tìm 3 thứ: Base URL (VD https://api.together.xyz/v1), tên model ảnh (VD black-forest-labs/FLUX.1-schnell), và API key.",
+        "Nếu nhà đó có cả /images/edits (sửa ảnh theo ảnh mẫu) thì tick \"Có ảnh tham chiếu\" ở bước sau.",
+        "Nhà không tương thích OpenAI → nhờ Claude viết thêm adapter trong _tools/gen-image.py."
+      ]
+    }
+  ],
+  "voice": [
+    {
+      "id": "cloudflare_melo",
+      "label": "Cloudflare MeloTTS — MIỄN PHÍ (chung hạn mức 10.000 neuron/ngày với ảnh), giọng cơ bản",
+      "free": true,
+      "refs": false,
+      "keys": [
+        {
+          "env": "CLOUDFLARE_API_TOKEN",
+          "label": "API Token",
+          "hidden": true
+        },
+        {
+          "env": "CLOUDFLARE_ACCOUNT_ID",
+          "label": "Account ID",
+          "hidden": false
+        }
+      ],
+      "url": "https://dash.cloudflare.com/profile/api-tokens",
+      "guide": [
+        "Vào dash.cloudflare.com → đăng ký miễn phí (không cần thẻ).",
+        "Account ID: trang chủ dashboard → bấm vào tài khoản → Account ID ở cột phải. Copy.",
+        "API Token: My Profile → API Tokens → Create Token → mẫu \"Workers AI\" → Continue → Create → copy (chỉ hiện 1 lần).",
+        "Lưu ý: gói free 10.000 neuron/ngày DÙNG CHUNG cho ảnh + giọng đọc. Hết hôm nay → mai reset."
+      ]
+    },
+    {
+      "id": "cloudflare_aura",
+      "label": "Cloudflare Aura-2 (Deepgram) — giọng tự nhiên hơn, tính vào hạn mức free",
+      "free": true,
+      "refs": false,
+      "keys": [
+        {
+          "env": "CLOUDFLARE_API_TOKEN",
+          "label": "API Token",
+          "hidden": true
+        },
+        {
+          "env": "CLOUDFLARE_ACCOUNT_ID",
+          "label": "Account ID",
+          "hidden": false
+        }
+      ],
+      "url": "https://dash.cloudflare.com/profile/api-tokens",
+      "guide": [
+        "Vào dash.cloudflare.com → đăng ký miễn phí (không cần thẻ).",
+        "Account ID: trang chủ dashboard → bấm vào tài khoản → Account ID ở cột phải. Copy.",
+        "API Token: My Profile → API Tokens → Create Token → mẫu \"Workers AI\" → Continue → Create → copy (chỉ hiện 1 lần).",
+        "Lưu ý: gói free 10.000 neuron/ngày DÙNG CHUNG cho ảnh + giọng đọc. Hết hôm nay → mai reset."
+      ]
+    },
+    {
+      "id": "gemini_tts",
+      "label": "Gemini TTS — có gói MIỄN PHÍ, nhiều giọng, chỉnh cảm xúc được",
+      "free": true,
+      "refs": false,
+      "keys": [
+        {
+          "env": "GEMINI_API_KEY",
+          "label": "API key (AIza...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://aistudio.google.com/apikey",
+      "guide": [
+        "Vào aistudio.google.com/apikey → đăng nhập Google.",
+        "Create API key → chọn hoặc tạo 1 Google Cloud project → copy key (bắt đầu AIza).",
+        "Giọng đọc (TTS) có gói free (Google dùng dữ liệu để cải thiện sản phẩm). Video Veo cần bật thanh toán cho project."
+      ]
+    },
+    {
+      "id": "elevenlabs",
+      "label": "ElevenLabs API — giọng đẹp nhất · free 10.000 ký tự/tháng (không dùng thương mại)",
+      "free": true,
+      "refs": false,
+      "keys": [
+        {
+          "env": "ELEVENLABS_API_KEY",
+          "label": "API key (sk_...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://elevenlabs.io/app/settings/api-keys",
+      "guide": [
+        "Vào elevenlabs.io → đăng nhập → góc trái dưới: avatar → API Keys (hoặc Developers → API Keys).",
+        "Create API Key → đặt tên → bật quyền Text to Speech (+ Music nếu dùng nhạc) → Create → copy (bắt đầu sk_).",
+        "Voice ID: menu Voices → chọn giọng → bấm ⋯ → Copy voice ID (dán vào audio-plan, Claude dùng).",
+        "Gói Free: 10.000 ký tự/tháng nhưng KHÔNG có quyền dùng thương mại → chạy ads cần gói Starter trở lên."
+      ]
+    },
+    {
+      "id": "openai_tts",
+      "label": "OpenAI TTS (gpt-4o-mini-tts) — trả phí, rẻ",
+      "free": false,
+      "refs": false,
+      "keys": [
+        {
+          "env": "OPENAI_API_KEY",
+          "label": "API key (sk-...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://platform.openai.com/api-keys",
+      "guide": [
+        "Vào platform.openai.com/api-keys → Create new secret key → copy (sk-...).",
+        "Cần nạp credit ở Settings → Billing."
+      ]
+    }
+  ],
+  "music": [
+    {
+      "id": "elevenlabs_music",
+      "label": "ElevenLabs Music — nhạc nền không lời đẹp nhất · cần gói trả phí",
+      "free": false,
+      "refs": false,
+      "keys": [
+        {
+          "env": "ELEVENLABS_API_KEY",
+          "label": "API key (sk_...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://elevenlabs.io/app/settings/api-keys",
+      "guide": [
+        "Vào elevenlabs.io → đăng nhập → góc trái dưới: avatar → API Keys (hoặc Developers → API Keys).",
+        "Create API Key → đặt tên → bật quyền Text to Speech (+ Music nếu dùng nhạc) → Create → copy (bắt đầu sk_).",
+        "Voice ID: menu Voices → chọn giọng → bấm ⋯ → Copy voice ID (dán vào audio-plan, Claude dùng).",
+        "Gói Free: 10.000 ký tự/tháng nhưng KHÔNG có quyền dùng thương mại → chạy ads cần gói Starter trở lên."
+      ]
+    },
+    {
+      "id": "replicate_music",
+      "label": "Replicate MusicGen — trả theo lượt, rẻ (có credit dùng thử)",
+      "free": false,
+      "refs": false,
+      "keys": [
+        {
+          "env": "REPLICATE_API_TOKEN",
+          "label": "API token (r8_...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://replicate.com/account/api-tokens",
+      "guide": [
+        "Vào replicate.com → đăng nhập GitHub.",
+        "Account → API tokens → Create token → copy (r8_...).",
+        "Account → Billing → thêm thẻ (trả theo lượt, thường có credit dùng thử)."
+      ]
+    }
+  ],
+  "video": [
+    {
+      "id": "fal_video",
+      "label": "fal.ai (Kling / Wan / Seedance) — có credit dùng thử khi đăng ký",
+      "free": true,
+      "refs": true,
+      "keys": [
+        {
+          "env": "FAL_KEY",
+          "label": "API key",
+          "hidden": true
+        }
+      ],
+      "url": "https://fal.ai/dashboard/keys",
+      "guide": [
+        "Vào fal.ai → đăng nhập → Dashboard → Keys.",
+        "Add key → scope API → Create → copy (chỉ hiện 1 lần).",
+        "Dashboard → Billing: tài khoản mới thường có credit dùng thử; hết thì nạp."
+      ]
+    },
+    {
+      "id": "replicate_video",
+      "label": "Replicate (Wan / Kling / Seedance) — trả theo lượt, có credit dùng thử",
+      "free": true,
+      "refs": true,
+      "keys": [
+        {
+          "env": "REPLICATE_API_TOKEN",
+          "label": "API token (r8_...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://replicate.com/account/api-tokens",
+      "guide": [
+        "Vào replicate.com → đăng nhập GitHub.",
+        "Account → API tokens → Create token → copy (r8_...).",
+        "Account → Billing → thêm thẻ (trả theo lượt, thường có credit dùng thử)."
+      ]
+    },
+    {
+      "id": "gemini_veo",
+      "label": "Google Veo 3.1 qua Gemini API — trả phí, thật nhất, có tiếng",
+      "free": false,
+      "refs": true,
+      "keys": [
+        {
+          "env": "GEMINI_API_KEY",
+          "label": "API key (AIza...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://aistudio.google.com/apikey",
+      "guide": [
+        "Vào aistudio.google.com/apikey → đăng nhập Google.",
+        "Create API key → chọn hoặc tạo 1 Google Cloud project → copy key (bắt đầu AIza).",
+        "Giọng đọc (TTS) có gói free (Google dùng dữ liệu để cải thiện sản phẩm). Video Veo cần bật thanh toán cho project."
+      ]
+    }
   ]
 }

@@ -1,0 +1,16 @@
+{
+  "name": "ai-video-remotion-base",
+  "private": true,
+  "description": "Bộ Remotion dùng chung cả máy — cài 1 lần vào ~/.config/ai-studio/remotion-base bằng `python3 _tools/remotion.py ensure`. Đổi phiên bản ở đây → máy tự cài lại.",
+  "type": "module",
+  "dependencies": {
+    "@remotion/bundler": "4.0.527",
+    "@remotion/cli": "4.0.527",
+    "@remotion/google-fonts": "4.0.527",
+    "@remotion/renderer": "4.0.527",
+    "@remotion/transitions": "4.0.527",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.527"
+  }
+}

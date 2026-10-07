@@ -42,3 +42,32 @@
 ## D. Tiêu chí duyệt
 
 Theo `_prompts/handoff-template.md` §D + Meta compliance trong `CLAUDE.md` (AI disclosure bật · claim chỉ APPROVED · logo/chữ nhãn đúng · 9:16 · chỉ upload từ `outputs/final/`).
+
+---
+
+## E. Phản hồi clip v1 (2026-10-07, Claude QC: 5 khung/clip + whisper VO)
+
+| Cảnh / mốc | Lỗi quan sát được | Nguyên nhân có thể | Prompt sửa / cách chỉnh khi dựng | Giữ nguyên |
+|---|---|---|---|---|
+| Tất cả · góc dưới phải | Watermark ✦ của Flow/Veo | (suy đoán) tài khoản Flow gói thường | Test: giữ. Bản chạy thật: render gói không watermark hoặc che khi dựng | — |
+| S01 · 1.5–5s | Cọ sơn móng áp út thay vì móng giữa | khung đầu cọ nằm giữa 2 ngón | Không cần sửa. Dựng: lấy 1.6–4.6s | nét đen trên móng, tay đứng yên |
+| S02 · cả clip | Dụng cụ giống nhíp (lỗi sẵn từ ảnh B-02) | ảnh khung đầu | Test: chấp nhận. Dựng: lấy 0.5–4.0s | chai Super Black, móng đen kín |
+| S03 | Đạt: đèn bật, móng sáng trong đèn | — | Dựng: lấy 0.8–3.7s | toàn bộ |
+| S04 · cả clip | Cọ + giọt top coat ở trên da ngón, không lên móng; không thấy móng chuyển bóng | khung đầu B-04 cọ trên da, Veo giữ nguyên | Render lại v2 với prompt dưới, HOẶC test: dùng 0–3.6s và để VO + chữ "SUPER GLOSSY" gánh | 4 móng đen satin |
+| S05 · từ ~1.5s | Tay đổi người: da nâu chuyển sang da sáng, móng dài nhọn | prompt cho tay nhấc + xoay → Veo vẽ lại tay | Render lại v2 với prompt dưới, HOẶC test: lấy 0–1.4s, làm chậm 0.4x cho đủ 3.5s | khung đầu 0–1.4s |
+| VO S03 | Whisper nghe "It cures…" (chữ "It" độ tin 0.29, dài 0.08s) | (suy đoán) tiếng hơi đầu câu bị nghe nhầm | Giữ, nghe lại khi review cổng 3 | — |
+
+**Prompt S04 v2** (Flow · Frames to Video · cùng ảnh B-04 v2):
+```
+Maintain the subject from the first frame. Within the first second the brush lifts off the finger and lands on the middle fingernail at the cuticle. From 1 to 4 seconds the brush sweeps clear top coat over the middle fingernail from cuticle to tip; the black nail surface it covers turns mirror-glossy with a sharp white reflection. The coating stays only on the nail. The client's hand stays completely still. Static 100mm macro camera, soft daylight from frame-left.
+
+Audio: No dialogue, no music, no sound effects; quiet natural ambience only.
+```
+
+**Prompt S05 v2** (Flow · Frames to Video · cùng ảnh B-05 v2):
+```
+Maintain the subject from the first frame exactly: the same hand, the same warm medium-brown skin, the same short glossy black nails. The hand stays resting on the table and does not move. Only a soft bright window highlight glides slowly from left to right across the glossy nails between 1 and 3 seconds. The bottles stay still in soft focus. Static camera.
+
+Audio: No dialogue, no music, no sound effects; quiet natural ambience only.
+```
+Lưu v2: `outputs/videos/KOLOR-2026-10-COMBO_S04_topcoat-glass_v2.mp4` · `…_S05_mirror-shine_v2.mp4`.

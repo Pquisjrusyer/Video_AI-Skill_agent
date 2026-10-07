@@ -13,7 +13,7 @@ CUSTOM = os.path.expanduser("~/.config/ai-studio/providers-custom.json")
 
 def load(task="image"):
     items = json.load(open(os.path.join(HERE, "providers.json"), encoding="utf-8"))[task]
-    if os.path.exists(CUSTOM):
+    if task == "image" and os.path.exists(CUSTOM):  # nhà tự thêm = API ảnh kiểu OpenAI
         for name, c in json.load(open(CUSTOM, encoding="utf-8")).items():
             items.insert(0, {"id": f"custom:{name}", "label": f"{name} — nhà tự thêm ({c['model']})", "free": False,
                              "refs": bool(c.get("refs")), "url": "", "custom": c,
@@ -32,8 +32,14 @@ if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd == "list":
         skip = set((sys.argv[3] if len(sys.argv) > 3 else "").split(","))
+        env = {}
+        envf = os.path.expanduser("~/.config/ai-studio/.env")
+        if os.path.exists(envf):  # chỉ lấy TÊN key có giá trị, không in giá trị
+            env = {l.split("=", 1)[0] for l in open(envf, encoding="utf-8") if "=" in l and l.split("=", 1)[1].strip()}
         for p in load(sys.argv[2]):
-            if p["id"] not in skip: print(f"{p['id']}\t{p['label']}")
+            if p["id"] in skip: continue
+            saved = bool(p["keys"]) and all(k["env"] in env for k in p["keys"])
+            print(f"{p['id']}\t{'✓ đã lưu key · ' if saved else ''}{p['label']}\t{int(saved)}")
     elif cmd == "get":
         p = get(sys.argv[2], sys.argv[3]) or {}
         what = sys.argv[4]

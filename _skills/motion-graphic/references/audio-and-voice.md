@@ -39,7 +39,7 @@ If the music track is shorter than the video: use the `loop` prop on `<Audio loo
 
 ### Step 1 — have the audio file first
 
-The voiceover comes only from ElevenLabs or OpenAI TTS, per `VO_TOOL` (`/assets` 4D, `outputs/audio/`; UGC uses the dialogue audio inside each take — Google Flow / TopView). Copy it to `public/audio/` with its raw name `[campaign-code]_vo-[scene-id]_v[n].mp3` — e.g. `public/audio/2026-06-LAUNCH_vo-S01_v1.mp3`.
+The voiceover comes only from a TTS provider per `VO_TOOL` (ElevenLabs connector, or `_tools/gen-voice.py`: ElevenLabs API / Gemini TTS / Cloudflare / OpenAI) (`/assets` 4D, `outputs/audio/`; UGC uses the dialogue audio inside each take — Google Flow / TopView). Copy it to `public/audio/` with its raw name `[campaign-code]_vo-[scene-id]_v[n].mp3` — e.g. `public/audio/2026-06-LAUNCH_vo-S01_v1.mp3`.
 
 ### Step 2 — set the scene's duration from the audio (do not hardcode)
 

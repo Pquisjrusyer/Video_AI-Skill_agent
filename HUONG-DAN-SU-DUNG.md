@@ -55,8 +55,9 @@ Muốn xem giữa chừng → dặn trước: *"dừng cho mình xem script trư
 | Brief, script, storyboard, prompt ảnh/video, bảng âm thanh | Claude |
 | Gen ảnh (GPT Image) | **Claude** (nếu chọn ở setup): ảnh minh hoạ storyboard ở cổng 1, ảnh thật ở cổng 2. Đổi key: "đổi key OpenAI" |
 | Sửa tay ảnh Claude đã note | **Bạn** (chatgpt.com / Photoshop / Canva) → thả lại `outputs/images/` đúng tên |
-| Gen ảnh Nano Banana (Gemini) · render video trên Google Flow khi test (TopView / Higgsfield thì Claude gen qua MCP/API) · chọn nhạc, SFX | **Bạn**, theo thẻ Claude viết |
-| Gen giọng đọc (VO) | **Claude**, theo công cụ đã chọn: connector ElevenLabs hoặc OpenAI TTS |
+| Gen clip video | **Claude** nếu chọn TopView / Higgsfield (MCP/API) hoặc **qua API** (fal.ai / Replicate / Google Veo) · **Bạn** nếu dùng Google Flow (test) |
+| Gen ảnh Nano Banana (Gemini) tự tay · chọn SFX · chọn nhạc khi chọn "tự chọn" | **Bạn**, theo thẻ Claude viết |
+| Gen giọng đọc (VO) + nhạc nền | **Claude**, theo công cụ đã chọn: connector ElevenLabs, hoặc API (ElevenLabs / Gemini / Cloudflare / OpenAI) — xem mục 7 |
 | QC ảnh/clip, dựng video, xuất final | Claude |
 | Duyệt cuối mỗi cổng | Người phụ trách (Account / Creative lead) |
 
@@ -67,6 +68,8 @@ Muốn xem giữa chừng → dặn trước: *"dừng cho mình xem script trư
 | Muốn | Nói |
 |---|---|
 | Bắt đầu video mới | "làm video 15s cho sản phẩm X, link …" / "đây là script, làm video giúp mình" |
+| Mở nhanh thư mục / file | "mở thư mục S01" · "mở thư mục videos" — hoặc bấm 📂 trên bảng HTML (Windows: cài 1 lần `powershell -ExecutionPolicy Bypass -File _tools\install-open-handler.ps1`) · 📋 Đường dẫn → Win+E → Ctrl+L → dán |
+| Chưa có ý tưởng, nhờ Claude nghĩ | **"Hãy tạo cho tôi video 20s về [tên / link sản phẩm]"** → Claude brainstorm 5 ý tưởng, bạn chọn 1 |
 | Xem đang tới đâu | "campaign X đang ở bước nào?" |
 | Duyệt | "ok cổng 1" · "ok cổng 2" · "ok cổng 3" |
 | Sửa | "sửa hook ngắn lại" · "ảnh B-02 lỗi tay, viết lại prompt" |
@@ -74,6 +77,7 @@ Muốn xem giữa chừng → dặn trước: *"dừng cho mình xem script trư
 | Dừng giữa chừng | "dừng cho mình xem storyboard" |
 | Kiểm tra máy | "set up dự án" |
 | Đổi công cụ (ảnh / video / UGC / giọng / nhạc) | "đổi công cụ" |
+| Đổi nhà gen giọng / nhạc / video, dán key mới | "đổi nhà giọng đọc" · "đổi nhà video" · hoặc đọc thần chú "gọi hồn đứa khác" → popup mở ngay |
 
 ---
 
@@ -112,3 +116,31 @@ Gen lại → tăng số: `_v2`, `_v3`.
 - Brand nào thì chỉ dùng context brand đó (`_brand/`). Claim chỉ lấy từ danh sách APPROVED trong `_products/<brand>/<sku>/product-brief.md`.
 - **Không dán API key / mật khẩu vào chat.**
 - Trước khi upload Meta: bật **AI disclosure**, kiểm lip sync (xem 1.5x), logo/màu/chữ trên bao bì đúng, file lấy từ `outputs/final/`.
+
+---
+
+## 7. Gen giọng đọc / nhạc / video qua API (không cần connector)
+
+**Khi nào dùng:** bạn không bật được connector ElevenLabs trên Claude, chưa mua TopView / Higgsfield, hoặc muốn nhanh. Claude tự gen, bạn chỉ cần dán key 1 lần vào popup (key lưu chung cả máy, dự án khác không hỏi lại).
+
+**Chọn ở đâu:** lúc "set up dự án", hoặc ngay sau khi đưa brief Claude sẽ hỏi *"Clip / giọng / nhạc làm bằng gì?"*. Chọn **Qua API** → popup hiện ra.
+
+**Popup có 3 bước:** ① chọn nhà cung cấp → ② "Bạn đã có key chưa?" → chưa có thì hiện **hướng dẫn lấy key từng bước + nút 🌐 Mở trang lấy key** → ③ dán key (ô ẩn). Key không bao giờ đi qua chat.
+
+| Loại | Nhà cung cấp | Giá | Lấy key ở đâu |
+|---|---|---|---|
+| Giọng đọc | **Gemini TTS** | **Miễn phí** (gói free) | aistudio.google.com/apikey → Create API key |
+| Giọng đọc | **Cloudflare Aura-2 / MeloTTS** | **Miễn phí** — chung 10.000 neuron/ngày với ảnh Cloudflare, hết thì mai dùng tiếp | dash.cloudflare.com → API Tokens (mẫu Workers AI) + Account ID |
+| Giọng đọc | ElevenLabs API | Free 10.000 ký tự/tháng **nhưng không được dùng chạy ads** · gói trả phí từ Starter | elevenlabs.io → avatar → API Keys |
+| Giọng đọc | OpenAI TTS | Trả phí, rẻ (dùng chung key OpenAI) | platform.openai.com/api-keys |
+| Nhạc nền | ElevenLabs Music | Cần gói trả phí | như trên, bật quyền Music |
+| Nhạc nền | Replicate MusicGen | Trả theo lượt, rẻ | replicate.com/account/api-tokens |
+| Video | **fal.ai** (Kling v3) | Có **credit dùng thử** khi đăng ký, hết thì nạp | fal.ai/dashboard/keys |
+| Video | Replicate (Kling / Wan / Seedance) | Trả theo lượt, có credit dùng thử | replicate.com/account/api-tokens |
+| Video | Google Veo 3.1 (Gemini API) | Trả phí — thật nhất, có tiếng | aistudio.google.com/apikey + bật thanh toán |
+
+**Nói thật:** giọng đọc có nhà miễn phí thật. **Video và nhạc thì không có nhà miễn phí lâu dài** — chỉ có credit dùng thử.
+
+**Khi đang gen mà hết credit / key lỗi:** Claude in 1 câu thần chú 🔮 (VD *"Credit OpenAI cháy rồi, gọi hồn đứa khác thôi 👻"*) và popup tự mở để bạn chọn nhà khác + dán key → Claude gen lại đúng file đó. Bấm Huỷ → Claude xuất thẻ để bạn tự gen.
+
+**Quy tắc vẫn giữ:** Claude chỉ gen clip sau khi bạn duyệt ảnh khung đầu + danh sách clip (cổng 2a). Mỗi clip / bản nhạc tối đa 1 lần gen + 1 lần sửa.

@@ -8,7 +8,7 @@
 
 ## 0. Bảng clip — bàn giao + duyệt (bắt buộc khi có clip video)
 
-Claude ghi `prompts-used/clips.json` → chạy `python3 _tools/clip-board.py campaigns/[campaign]` → `outputs/review/clip-board.html` → **gửi file card hiển thị trực tiếp** cho user.
+Claude ghi `prompts-used/clips.json` → chạy `python3 _tools/clip-board.py campaigns/[campaign]` → `outputs/review/clip-board.html` → hỏi user **Xem tại đây** (file card `display: render`) hay **Mở trên trình duyệt** (`sh _tools/open-browser.sh outputs/review/clip-board.html`).
 - **Trước khi render:** bảng bàn giao — mỗi cảnh: mã · thời gian · mục đích · công cụ + cài đặt · render/dùng (s) · ảnh khung đầu · prompt EN (nút Copy) + dịch VI · lời thoại EN + VI · file lưu về · ô "Xong".
 - **Sau khi có clip** (Claude gen xong hoặc user thả vào `outputs/videos/`): chạy lại đúng lệnh → mỗi cảnh thêm 3 khung hình cắt từ clip thật, **lời nghe được trong clip** (faster-whisper) so với lời script (chữ thiếu gạch đỏ, chữ thừa tô vàng, % khớp) và kiểm tra: 9:16 · đủ độ dài · lời không vượt đoạn dùng · tốc độ nói ≤ 3.2 từ/giây. Báo user lỗi theo từng cảnh, chỉ làm lại cảnh lỗi.
 
@@ -26,6 +26,7 @@ Claude ghi `prompts-used/clips.json` → chạy `python3 _tools/clip-board.py ca
     {
       "id": "S1", "time": "0.0–7.5s", "purpose": "Hook",
       "tool": "Flow · Veo 3.1 · Frames to Video · 9:16",
+      "tool_id": "flow | higgsfield | topview — chọn khối '⚙️ Hướng dẫn setting' (`_tools/video-tools.json`); bỏ trống → tự đoán từ `tool`",
       "render_s": 8, "use_s": 7.5,
       "first_frame": "outputs/images/[code]_A-02_take-A-talk_v1.png",
       "prompt_en": "Prompt nguyên văn (EN)",

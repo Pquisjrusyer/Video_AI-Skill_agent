@@ -10,7 +10,7 @@ $font = New-Object Drawing.Font("Segoe UI", 9.5)
 $data = Get-Content -Raw -Encoding UTF8 (Join-Path $PSScriptRoot "providers.json") | ConvertFrom-Json
 $list = @($data.$Task)
 $customFile = Join-Path $env:USERPROFILE ".config\ai-studio\providers-custom.json"
-if (Test-Path $customFile) {
+if ($Task -eq "image" -and (Test-Path $customFile)) {  # nhà tự thêm = API ảnh kiểu OpenAI
   $cj = Get-Content -Raw -Encoding UTF8 $customFile | ConvertFrom-Json
   foreach ($p in $cj.PSObject.Properties) {
     $c = $p.Value
@@ -21,6 +21,16 @@ if (Test-Path $customFile) {
 }
 $skip = $Exclude.Split(",")
 $items = @($list | Where-Object { $skip -notcontains $_.id })
+# Key đã lưu trên máy (chỉ đọc TÊN key có giá trị, không đọc / in giá trị) → đánh dấu "✓ đã lưu key"
+$envFile = Join-Path $env:USERPROFILE ".config\ai-studio\.env"
+$have = @{}
+if (Test-Path $envFile) { foreach ($ln in Get-Content -Encoding UTF8 $envFile) { if ($ln -match '^([A-Z0-9_]+)=(.+)$') { $have[$matches[1]] = $true } } }
+foreach ($i in $items) {
+  $ks = @($i.keys | ForEach-Object { $_.env })
+  $saved = ($ks.Count -gt 0) -and (@($ks | Where-Object { -not $have[$_] }).Count -eq 0)
+  $i | Add-Member -NotePropertyName saved -NotePropertyValue $saved -Force
+  if ($saved) { $i.label = "✓ đã lưu key · " + $i.label }
+}
 
 function New-Form($title, $h) {
   $f = New-Object Windows.Forms.Form
@@ -49,6 +59,22 @@ while ($true) {
     $sel = $items[$lb.SelectedIndex]; $step = "have"
   }
   elseif ($step -eq "have") {
+    if ($sel.saved) {
+      # Đã lưu key trên máy (dùng chung mọi dự án) → dùng luôn, không bắt nhập lại
+      $f = New-Form $title 240
+      [void](Add-Label $f "Máy đã lưu key của:`n$($sel.label -replace '^✓ đã lưu key · ', '')`n(dùng chung mọi dự án trên máy này)" 12 64)
+      $d0 = New-Object Windows.Forms.CheckBox; $d0.Text = "Dùng nhà cung cấp này làm mặc định từ giờ"; $d0.Left = 14; $d0.Top = 84; $d0.Width = 535; $f.Controls.Add($d0)
+      $use = Add-Btn $f "Dùng key đã lưu ✓" 14 130 170 "OK"
+      [void](Add-Btn $f "Nhập key mới" 192 130 130 "Yes")
+      [void](Add-Btn $f "‹ Quay lại" 330 130 110 "Retry")
+      $f.AcceptButton = $use
+      $r = $f.ShowDialog()
+      if ($r -eq "OK") {
+        [Console]::OutputEncoding = [Text.Encoding]::UTF8
+        [Console]::Out.Write("PROVIDER=" + $sel.id + "`nDEFAULT=" + [int]$d0.Checked + "`n"); exit 0
+      } elseif ($r -eq "Yes") { $step = "input" } elseif ($r -eq "Retry") { $step = "pick" } else { exit 1 }
+      continue
+    }
     $f = New-Form $title 210
     [void](Add-Label $f "Bước 2/3 — Bạn đã có key của:`n$($sel.label)`nchưa?" 12 64)
     $yes = Add-Btn $f "Có rồi › nhập key" 14 100 170 "Yes"

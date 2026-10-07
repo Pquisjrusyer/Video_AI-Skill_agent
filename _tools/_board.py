@@ -99,11 +99,49 @@ def line_estimate(text, use_s, wps=WPS):
     return f"{n} từ ≈ {est:.1f}s · cảnh dùng {use:g}s " + ("✅" if ok else f"⚠️ dài hơn cảnh {est - use:.1f}s — rút lời hoặc kéo dài cảnh")
 
 
+
+def open_btns(abs_path, label="📂 Mở thư mục"):
+    """Nút mở File Explorer (cần cài 1 lần: _tools/install-open-handler.ps1) + copy đường dẫn đầy đủ (dùng ngay)."""
+    if not abs_path: return ""
+    from urllib.parse import quote
+    try:  # thư mục lưu về chưa có → tạo sẵn để nút mở đúng chỗ thả file
+        d = abs_path if os.path.splitext(abs_path)[1] == "" else os.path.dirname(abs_path)
+        os.makedirs(d, exist_ok=True)
+    except OSError: pass
+    href = "aivideo-open:" + quote(abs_path.replace("\\", "/"), safe=":/")
+    return (f'<div class="openrow"><a class="btn sm" href="{e(href)}" title="Mở File Explorer tới đây (Windows, cần cài 1 lần: '
+            f'powershell -ExecutionPolicy Bypass -File _tools\\install-open-handler.ps1)">{e(label)}</a>'
+            f'<button class="btn sm" onclick="cpPath(this)" data-p="{e(abs_path)}" title="Copy đường dẫn đầy đủ → Win+E → Ctrl+L → dán">📋 Đường dẫn</button></div>')
+
 def _chip(text, cls=""):
     return f'<span class="chip {cls}">{e(text)}</span>' if text else ""
 
 
-def _row(r, campaign):
+def _video_tools():
+    return json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "video-tools.json"), encoding="utf-8"))["tools"]
+
+
+def tool_guide(r, ratio):
+    """Khối '⚙️ Hướng dẫn setting' theo nền tảng của cảnh (tool_id hoặc đoán từ chữ trong `tool`). Không khớp → ''."""
+    tid = r.get("tool_id"); low = (r.get("tool") or "").lower()
+    tools = _video_tools()
+    t = next((x for x in tools if x["id"] == tid), None) or next((x for x in tools if any(m in low for m in x["match"])), None)
+    if not t: return ""
+    out = r.get("out", ""); folder, name = (out.rsplit("/", 1) if "/" in out else ("outputs/videos", out or "[tên file]"))
+    ff = r.get("image_caption") or "ảnh khung đầu"
+    ff = ff.split(" ")[0] if ff.endswith(")") else ff
+    fill = lambda s: (s.replace("{ratio}", ratio).replace("{render_s}", str(r.get("render_s") or r.get("use_s") or "?"))
+                      .replace("{first_frame}", ff).replace("{out_name}", name).replace("{out_folder}", folder))
+    md = lambda s: re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", e(fill(s)))
+    steps = "".join(f"<li>{md(s)}</li>" for s in t["steps"])
+    sets = "".join(f"<dt>{e(k)}</dt><dd>{md(v)}</dd>" for k, v in t.get("settings", []))
+    tips = "".join(f"<li>{e(fill(x))}</li>" for x in t.get("tips", []))
+    return (f'<details class="guide"><summary>⚙️ Hướng dẫn setting trên <b>{e(t["label"])}</b>'
+            f'<a class="btn sm" href="{e(t["url"])}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Mở ↗</a></summary>'
+            f'<div class="gbody"><ol>{steps}</ol><dl>{sets}</dl>{f"<ul class=tips>{tips}</ul>" if tips else ""}</div></details>')
+
+
+def _row(r, campaign, ratio="9:16"):
     prompts = "".join(
         f'<div class="pcard"><div class="phead"><span>{e(lbl)}</span><button class="btn sm" onclick="cpText(this)">Copy</button></div>'
         f'<pre>{e(en)}</pre><p class="vi"><span class="tag">VI</span>{e(vi)}</p></div>'
@@ -128,16 +166,17 @@ def _row(r, campaign):
 </header>
 <div class="sbody">
   <div class="media"><figure>{pic}{img_tools(r.get('image_name')) if r.get('image') else ''}</figure>
-    {f'<div class="cap">{e(r["image_caption"])}</div>' if r.get('image_caption') else ''}
+    {f'<div class="cap">{e(r["image_caption"])}</div>' if r.get('image_caption') else ''}{open_btns(r.get("image_abs"), "📂 Mở file ảnh")}
     {f'<p class="visual">{e(r["visual_vi"])}</p>' if r.get('visual_vi') else ''}</div>
-  <div class="content">{prompts}{line}
+  <div class="content">{prompts}{tool_guide(r, ratio)}{line}
     {f'<div class="onscreen"><span class="qlabel">Chữ trên màn hình</span>{e(r["onscreen"])}</div>' if r.get('onscreen') else ''}
     {f'<div class="heard"><div class="qlabel">Nghe được trong clip <span class="legend"><del>thiếu</del> <ins>thừa / khác</ins></span></div>{r["heard_html"]}</div>' if r.get('heard_html') else ''}
     {f'<div class="frames">{r["frames_html"]}</div>' if r.get('frames_html') else ''}
     {f'<p class="note"><b>Ghi chú:</b> {e(r["notes_vi"])}</p>' if r.get('notes_vi') else ''}</div>
   <aside class="side">
     <div class="qlabel">Lưu về</div>
-    {f'<div class="path"><code>{e(name)}</code><button class="btn sm" onclick="cpPath(this)" data-p="{e(out)}">Copy</button></div><div class="muted small">{e(folder)}/</div>' if out else '<div class="muted small">—</div>'}
+    {f'<div class="path"><code>{e(name)}</code><button class="btn sm" onclick="cpPath(this)" data-p="{e(name)}" title="Copy tên file">Copy</button></div><div class="muted small">{e(folder)}/</div>' if out else '<div class="muted small">—</div>'}
+    {open_btns(r.get("out_abs"))}
     {f'<div class="qlabel">Kiểm tra</div><ul class="checks">{checks}</ul>' if checks else ''}
     <label class="done"><input type="checkbox" data-k="{e(campaign)}:{e(r['id'])}"><span>Xong / đã duyệt</span></label>
   </aside>
@@ -200,9 +239,17 @@ body.show-safe .safeinfo{display:block}.specs{display:none;grid-template-columns
 .spec{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:12px 14px;font-size:13px}
 .spec-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:8px}.spec dl{margin:0;display:grid;grid-template-columns:88px 1fr;gap:4px 10px}
 .spec dt{color:var(--muted);font-size:12px;font-weight:600}.spec dd{margin:0}.spec .pill{margin-left:4px}.pill.bad{background:var(--bad-soft);color:var(--bad)}
-.tips{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:12.5px}figcaption,.cap{font-size:11.5px;color:var(--muted);margin-top:4px;word-break:break-all}
+.tips{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:12.5px}
+.guide{border:1px solid var(--line);border-radius:12px;background:var(--soft)}body.hide-guides .guide{display:none}
+.guide summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:13px;font-weight:600}
+.guide summary::-webkit-details-marker{display:none}.guide summary::after{content:"▸";margin-left:6px;color:var(--muted);transition:transform .15s}
+.guide[open] summary::after{transform:rotate(90deg)}.guide summary .btn{margin-left:auto}
+.gbody{padding:0 14px 12px;font-size:13px}.gbody ol{margin:4px 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.gbody dl{margin:0;display:grid;grid-template-columns:92px 1fr;gap:3px 10px}.gbody dt{color:var(--muted);font-size:12px;font-weight:600}.gbody dd{margin:0}
+.guidebtn.on{background:var(--accent-soft);color:var(--accent);border-color:transparent}figcaption,.cap{font-size:11.5px;color:var(--muted);margin-top:4px;word-break:break-all}
 .noimg{aspect-ratio:9/16;border-radius:10px;display:grid;place-items:center;color:var(--muted);background:repeating-linear-gradient(45deg,var(--soft),var(--soft) 8px,var(--line) 8px,var(--line) 9px)}
 .visual{font-size:13px;margin:8px 0 0}
+.openrow{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}.openrow .btn{text-decoration:none;white-space:nowrap}.bar .openrow{margin:0;display:inline-flex}
 .imgbtn{display:flex;gap:6px;margin-top:6px}.imgbtn .btn{flex:1;white-space:nowrap;padding:5px 4px;font-size:12px}
 .btn{font:inherit;font-size:12.5px;font-weight:600;padding:6px 10px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
 .btn:hover{border-color:var(--accent);color:var(--accent)}.btn.sm{padding:3px 10px;font-size:12px}
@@ -246,6 +293,9 @@ if(!navigator.clipboard||!window.ClipboardItem){blocked();return}
 /* truyền Promise vào ClipboardItem ngay trong cú bấm — giữ quyền copy (Chrome, Edge, Safari) */
 navigator.clipboard.write([new ClipboardItem({'image/png':new Promise(res=>c.toBlob(res,'image/png'))})]).then(()=>toast('Đã copy ảnh ✓')).catch(blocked)}
 function dlImg(b,n){const a=document.createElement('a');a.href=imgOf(b).src;a.download=n;document.body.appendChild(a);a.click();a.remove();toast('Đã tải '+n)}
+function toggleGuides(b){const off=document.body.classList.toggle('hide-guides');b.classList.toggle('on',!off);try{localStorage.setItem('hideGuides',off?'1':'0')}catch(e){}}
+(function(){let off=false;try{off=localStorage.getItem('hideGuides')==='1'}catch(e){}if(off){document.body.classList.add('hide-guides');const b=document.querySelector('.guidebtn');b&&b.classList.remove('on')}
+if(!document.querySelector('details.guide')){const b=document.querySelector('.guidebtn');b&&b.remove()}})();
 function progress(){const all=[...document.querySelectorAll('input[data-k]')],n=all.filter(x=>x.checked).length;
 document.getElementById('pct').style.width=(all.length?100*n/all.length:0)+'%';document.getElementById('cnt').textContent=n+'/'+all.length;
 all.forEach(x=>{const s=x.closest('.scene');s&&s.classList.toggle('is-done',x.checked);const a=document.querySelector('.nav a[href="#'+(s&&s.id)+'"]');a&&a.classList.toggle('done',x.checked)})}
@@ -255,7 +305,7 @@ progress();
 """
 
 
-def page(title, campaign, rows, howto="", look="", extra_html="", top_html="", safe=None, ratio="9:16", duration=None):
+def page(title, campaign, rows, howto="", look="", extra_html="", top_html="", safe=None, ratio="9:16", duration=None, camp_abs=""):
     nav = "".join(f'<a href="#{e(r["id"])}" class="{"warn" if any(not ok for ok, _ in r.get("checks", [])) else ""}">{e(r["id"])}</a>' for r in rows)
     return f"""<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{e(title)} · {e(campaign)}</title>
@@ -266,13 +316,15 @@ def page(title, campaign, rows, howto="", look="", extra_html="", top_html="", s
   <h1>{e(title)}<small>{e(campaign)}</small></h1>
   {f'<div class="meta">{e(howto)}</div>' if howto else ''}
   <div class="bar">Đã duyệt <b id="cnt">0/0</b><div class="track"><i id="pct"></i></div>
-  {f'<button class="btn sm safebtn on" onclick="document.body.classList.toggle(\'show-safe\');this.classList.toggle(\'on\')" title="{e(chr(10).join(safe["notes"]))}">▣ Khung + thông số: {e(safe["label"])}</button>' if safe else ''}</div>
+  {f'<button class="btn sm safebtn on" onclick="document.body.classList.toggle(\'show-safe\');this.classList.toggle(\'on\')" title="{e(chr(10).join(safe["notes"]))}">▣ Khung + thông số: {e(safe["label"])}</button>' if safe else ''}
+  {open_btns(camp_abs, "📂 Thư mục campaign")}
+  <button class="btn sm guidebtn on" onclick="toggleGuides(this)" title="Ẩn / hiện khối hướng dẫn setting ở mọi cảnh">⚙️ Hướng dẫn setting</button></div>
   {f'<div class="safeinfo">Dải đỏ = bị giao diện app che (chữ, logo, CTA, mặt nhân vật phải nằm trong khung nét đứt) · trên {safe["top"]}% · dưới {safe["bottom"]}% · trái {safe["left"]}% · phải {safe["right"]}%</div>' if safe else ''}
   <nav class="nav">{nav}</nav>
 </div></div>
 <main>
 {spec_panel(safe, duration)}{f'<div class="look"><span class="qlabel">Look chung</span><br>{e(look)}</div>' if look else ''}{top_html}
-{''.join(_row(r, campaign) for r in rows)}
+{''.join(_row(r, campaign, ratio) for r in rows)}
 {f'<div class="extra">{extra_html}</div>' if extra_html else ''}
 </main>
 <div class="toast" id="toast"></div>

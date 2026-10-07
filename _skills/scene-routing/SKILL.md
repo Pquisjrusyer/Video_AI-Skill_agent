@@ -42,7 +42,7 @@ Read [scene-routing-rules.md](references/scene-routing-rules.md) to handle ambig
 1. For every scene, generate ONE low-quality preview image (`gen-image.py --quality low`, correct ratio, planned framing/lighting) → `outputs/review/storyboard/[code]_P-S01_v1.png`. Scenes using a real photo (packshot, logo) point to that photo instead. Previews are for approval only — never used as video frames, never counted against the 1 gen + 1 fix limit.
 2. Write `campaigns/[campaign]/scripts/storyboard.json` following `_prompts/templates/storyboard-template.md` (scene codes S01, S02…), including for every scene: purpose, tool + render/use seconds, image prompt (`prompt_en` + `prompt_vi`), draft video prompt (`video_prompt_en` + `video_prompt_vi`), dialogue/VO (`line_en` + `line_vi`, copied verbatim from the script's per-scene table), on-screen text and output filename — the same information as the clip board, so any prompt can be copied to another platform.
 3. Run `python3 _tools/storyboard.py campaigns/[campaign]` → `storyboard.md` + `storyboard.html`.
-4. Show the user `storyboard.html` as a rendered file card (display: render). Do not send separate image links.
+4. Ask the user where to view `storyboard.html` (AskUserQuestion): **Xem tại đây** → rendered file card (display: render) · **Mở trên trình duyệt** → `sh _tools/open-browser.sh scripts/storyboard.html` (copy image / open folder only work there). Do not send separate image links.
 
 ### Step 4 — Hand-off
 

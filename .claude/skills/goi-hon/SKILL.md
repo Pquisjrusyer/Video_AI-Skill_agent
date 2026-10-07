@@ -1,6 +1,6 @@
 ---
 name: goi-hon
-description: Câu thần chú đổi API key / nhà cung cấp — mở popup NGAY để user chọn provider khác hoặc dán key mới. Dùng khi user nói "gọi hồn", "gọi hồn đứa khác", "credit cháy rồi", "cháy credit", "hết credit", "hết tiền rồi", "đổi provider", "đổi nhà cung cấp", "đổi key", "thay key", "key lỗi", "triệu hồi provider", hoặc câu thần chú tương tự.
+description: Câu thần chú đổi API key / nhà cung cấp (ảnh, giọng đọc, nhạc, video) — mở popup NGAY để user chọn provider khác hoặc dán key mới. Dùng khi user nói "gọi hồn", "gọi hồn đứa khác", "credit cháy rồi", "cháy credit", "hết credit", "hết tiền rồi", "đổi provider", "đổi nhà cung cấp", "đổi key", "thay key", "key lỗi", "triệu hồi provider", hoặc câu thần chú tương tự.
 ---
 
 # Gọi hồn provider 🔮
@@ -17,5 +17,10 @@ User đọc thần chú → **mở popup ngay**, không hỏi lại, không gi�
 3. Báo đúng 1–2 dòng: "🔮 Đã gọi hồn **[nhà]** (key OK · mặc định / chỉ lần này)". Đang dở việc gen ảnh → chạy lại đúng ảnh bị lỗi bằng `--provider <nhà>`.
 4. User bấm Huỷ → "Huỷ phép, giữ nguyên nhà cũ." Không làm gì thêm.
 
-Phạm vi hiện tại: **ảnh** (`gen-image.py`, 7 nhà: openai, gemini, fal, replicate + miễn phí cloudflare, pollinations, huggingface; cộng các nhà user tự thêm — lưu ở `~/.config/ai-studio/providers-custom.json`).
-User muốn đổi key cho việc khác (giọng đọc, video TopView / Higgsfield) → `sh "$CLAUDE_PROJECT_DIR/_tools/set-key.sh" TÊN_KEY "gợi ý"` (popup ẩn). Không bao giờ nhận key qua chat.
+Chọn nhóm theo lời user / việc đang dở (đối số đầu của `pick-provider.sh`):
+- `image` (mặc định) — `gen-image.py`: openai, gemini, fal, replicate + miễn phí cloudflare, pollinations, huggingface; cộng nhà user tự thêm (`~/.config/ai-studio/providers-custom.json`, chỉ cho ảnh).
+- `voice` — "đổi nhà giọng đọc", "ElevenLabs hết ký tự"… → `gen-voice.py`: elevenlabs, openai_tts + miễn phí gemini_tts, cloudflare_aura, cloudflare_melo.
+- `music` — `gen-music.py`: elevenlabs_music, replicate_music.
+- `video` — "đổi nhà video", "fal hết credit"… → `gen-video.py`: fal_video, replicate_video, gemini_veo.
+Bước 2 kiểm key: ảnh → `gen-image.py --check --provider <nhà>`; nhóm khác → `python3 _tools/key-status.py --all`. Đang dở việc gen → chạy lại đúng file lỗi bằng `--provider <nhà>`.
+Key TopView / Higgsfield → `sh "$CLAUDE_PROJECT_DIR/_tools/set-key.sh" TÊN_KEY "gợi ý"` (popup ẩn). Không bao giờ nhận key qua chat.

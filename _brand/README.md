@@ -29,6 +29,7 @@ Xem trường **Brand** ở đầu `_products/<brand>/<sku>/product-brief.md`. K
 | `kolor-blooming-gel` | Kolor Acrylic |
 | `kolor-glossy-top-coat` | Kolor Acrylic |
 | `kolor-topcoat-gel-combo` | Kolor Acrylic |
+| `kolor-acrylic-cover-powder` | Kolor Acrylic |
 
 ## Thêm brand mới
 

@@ -66,12 +66,35 @@ for s in scenes:
         "render_s": s.get("render_s", ""), "use_s": s.get("use_s", ""),
         "image": _board.full_uri(Image.open(p)) if p and os.path.exists(p) else "",
         "image_name": _board.jpg_name(p) if p and os.path.exists(p) else "",
+        "image_abs": os.path.abspath(p) if p and os.path.exists(p) else "",
+        "out_abs": os.path.abspath(os.path.join(camp, s["out"])) if s.get("out") else "",
         "image_caption": os.path.basename(s.get("image", "")) + (" (ảnh minh hoạ)" if "_P-" in s.get("image", "") else ""),
         "visual_vi": s.get("visual_vi", ""), "prompts": prompts(s),
         "line_en": line_en(s), "line_vi": line_vi(s), "onscreen": s.get("onscreen", ""),
         "notes_vi": s.get("notes_vi", ""), "out": s.get("out", ""), "wps": sb.get("wps"),
     })
 plat = sb.get("platform") or {}
+
+# ---------- Kiểm lố thời lượng: cảnh + lời đọc ước tính so với thời lượng brief ----------
+def _end(t):
+    import re as _re
+    n = _re.findall(r"\d+(?:\.\d+)?", str(t or "")); return float(n[1]) if len(n) >= 2 else None
+target = _board._secs(sb.get("duration"))
+wps = sb.get("wps") or _board.WPS
+scene_end = max([x for x in (_end(s.get("time")) for s in scenes) if x is not None], default=None)
+words = sum(len(__import__("re").findall(r"[A-Za-z0-9']+", line_en(s) or "")) for s in scenes)
+problems = []
+if target is None:
+    problems.append("Chưa có thời lượng video trong storyboard.json → HỎI USER bao nhiêu giây trước khi làm tiếp")
+else:
+    if scene_end is not None and scene_end > target + 0.2:
+        problems.append(f"Các cảnh kéo dài tới {scene_end:g}s, LỐ {scene_end - target:.1f}s so với {target:g}s")
+    if scene_end is not None and scene_end < target - 0.5:
+        problems.append(f"Các cảnh chỉ tới {scene_end:g}s, THIẾU {target - scene_end:.1f}s so với {target:g}s")
+    if words and words / wps > target + 0.2:
+        problems.append(f"Lời đọc {words} từ ≈ {words / wps:.1f}s, LỐ {words / wps - target:.1f}s so với {target:g}s → rút lời")
+warn_html = ("<div class='look' style='border-color:var(--bad);background:var(--bad-soft);color:var(--bad)'><b>⚠️ Kiểm thời lượng:</b><br>"
+             + "<br>".join(_board.e(p) for p in problems) + "</div>") if problems else ""
 meta = " · ".join(x for x in (sb.get("duration", ""), sb.get("ratio", ""), sb.get("format", ""),
                               ("Bản phụ: " + ", ".join(plat["extra_ratios"])) if plat.get("extra_ratios") else "",
                               ("Template: " + plat["template"]) if plat.get("template") else "") if x)
@@ -79,7 +102,9 @@ ch = sb.get("character") or {}
 ch_imgs = [(_board.full_uri(Image.open(os.path.join(camp, im))), os.path.basename(im), _board.jpg_name(im))
            for im in ch.get("images", []) if os.path.exists(os.path.join(camp, im))]
 html_out = _board.page("Storyboard", sb.get("campaign", ""), rows, howto=meta, look=sb.get("look", ""),
-                       top_html=_board.character_html(ch, ch_imgs), safe=_board.safe_zone(plat), ratio=sb.get("ratio") or "9:16", duration=sb.get("duration"))
+                       top_html=warn_html + _board.character_html(ch, ch_imgs), safe=_board.safe_zone(plat), ratio=sb.get("ratio") or "9:16", duration=sb.get("duration"), camp_abs=os.path.abspath(camp))
 dst = os.path.join(camp, "scripts", "storyboard.html")
 open(dst, "w", encoding="utf-8").write(html_out)
 print(dst); print(os.path.join(camp, "scripts", "storyboard.md"))
+for p in problems: print("⚠️ " + p)
+if target is not None and not problems: print(f"✓ Thời lượng: các cảnh tới {scene_end:g}s · lời ≈ {words / wps:.1f}s · đúng {target:g}s")

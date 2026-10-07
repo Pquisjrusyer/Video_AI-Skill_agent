@@ -9,7 +9,7 @@ mkdir -p "$(dirname "$PREFS")"; touch "$PREFS"
 
 for kv in "$@"; do
   case "$kv" in
-    IMAGE_TOOL=*|IMAGE_PROVIDER=*|VIDEO_TOOL=*|UGC_TOOL=*|VO_TOOL=*|MUSIC_TOOL=*|TOPVIEW_CONN=*|HIGGSFIELD_CONN=*) ;;
+    IMAGE_TOOL=*|IMAGE_PROVIDER=*|VO_PROVIDER=*|MUSIC_PROVIDER=*|VIDEO_PROVIDER=*|VIDEO_TOOL=*|UGC_TOOL=*|VO_TOOL=*|MUSIC_TOOL=*|TOPVIEW_CONN=*|HIGGSFIELD_CONN=*) ;;
     *) echo "Bỏ qua (tên không hợp lệ): $kv"; continue ;;
   esac
   name="${kv%%=*}"

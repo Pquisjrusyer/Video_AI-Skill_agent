@@ -18,7 +18,7 @@
 - Phát âm brand/tên sản phẩm: ... (chưa rõ → hỏi user, đánh dấu ⚠️)
 - Không tự thêm lời, không âm đệm ("um", hơi thở giả).
 
-**2. Lời đọc sạch** — chỉ nội dung đọc, mỗi câu 1 file. Claude gen qua ElevenLabs sau "ok 4D" → `outputs/audio/`, tên file `[campaign-code]_vo-[scene-id]_v[n].mp3` (VD 2026-06-LAUNCH_vo-S01_v1.mp3):
+**2. Lời đọc sạch** — chỉ nội dung đọc, mỗi câu 1 file. Claude gen ở cổng 2b theo `VO_TOOL` (connector ElevenLabs; không có connector hoặc `VO_TOOL=api` → `python3 _tools/gen-voice.py --text "…" --style "[tóm mục 1]" --out …`) → `outputs/audio/`, tên file `[campaign-code]_vo-[scene-id]_v[n].mp3` (VD 2026-06-LAUNCH_vo-S01_v1.mp3):
 | File | Text | Ước tính (s) | Slot scene (s) | Vừa? |
 |---|---|---|---|---|
 
@@ -36,7 +36,7 @@ VO space: giữ dải mid (~1–4kHz) thoáng; không melody chính đè lời
 Tail: [fade/ring-out x s]
 Instrumental only, no vocals.
 ```
-Nguồn: prompt cho tool gen nhạc, HOẶC tiêu chí chọn bài royalty-free (kiểm license dùng cho ads). **Người dùng tự gen/chọn → `outputs/audio/`** (VD 2026-06-LAUNCH_music_v1.mp3). Thêm vào Danh sách asset (Loại = nhạc).
+Nguồn: `MUSIC_TOOL=elevenlabs` → connector, không có connector thì `python3 _tools/gen-music.py --provider elevenlabs_music` · `MUSIC_TOOL=api` → `gen-music.py` (nhà theo `MUSIC_PROVIDER`) — dùng khối trên làm `--prompt`, `--seconds` = Duration · `MUSIC_TOOL=self` → prompt cho tool gen nhạc, HOẶC tiêu chí chọn bài royalty-free (kiểm license dùng cho ads), **người dùng tự gen/chọn → `outputs/audio/`** (VD 2026-06-LAUNCH_music_v1.mp3). Thêm vào Danh sách asset (Loại = nhạc).
 
 ## C. SFX
 

@@ -20,7 +20,7 @@ _brand/[brand]/
 
 ## Brand nào thuộc sản phẩm nào
 
-Xem trường **Brand** ở đầu `_products/<sku>/product-brief.md`. Không chắc thì hỏi, không đoán.
+Xem trường **Brand** ở đầu `_products/<brand>/<sku>/product-brief.md`. Không chắc thì hỏi, không đoán.
 
 | Sản phẩm | Brand |
 |---|---|
@@ -28,6 +28,7 @@ Xem trường **Brand** ở đầu `_products/<sku>/product-brief.md`. Không ch
 | `collagen-peptide-moisture-treatment` | Kreizi Beauty |
 | `kolor-blooming-gel` | Kolor Acrylic |
 | `kolor-glossy-top-coat` | Kolor Acrylic |
+| `kolor-topcoat-gel-combo` | Kolor Acrylic |
 
 ## Thêm brand mới
 

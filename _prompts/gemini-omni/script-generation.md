@@ -1,7 +1,7 @@
 # Gemini Omni Prompt Library — Script Generation
 
 > **Thư viện tham khảo — không phải deliverable.** Ở `/script`, Claude dùng các block dưới đây làm **khung để tự viết script** (không cần mở Gemini). Output → `campaigns/[campaign]/scripts/script.md` (theo `_prompts/templates/script-template.md`), dừng cổng B → UGC: chia thành thẻ take TopView; Voiceover: VO gen qua ElevenLabs ở `/assets` 4D.
-> **Word budget:** VO/ElevenLabs ≈ 2.4 từ/giây (30s ≈ 70 từ). UGC/TopView ≈ 3.5 từ/giây, mỗi take < 40 từ.
+> **Word budget:** VO/ElevenLabs ≈ 2.4 từ/giây (30s ≈ 70 từ). UGC/Google Flow ≤ 20 từ/take (8s). UGC/TopView ≈ 3.5 từ/giây, mỗi take < 40 từ.
 
 ---
 
@@ -28,7 +28,7 @@ CHARACTER:
 
 AD SPECIFICATIONS:
 - Format: [Testimonial / Product demo + voiceover / Problem-solution]
-- Duration: [15s / 20s / 30s] — word budget ≈ 3.5 words/second (TopView), split into takes of < 40 words each
+- Duration: [15s / 20s / 30s] — split into takes: Google Flow ≤ 20 words per take (8s clip) · TopView ≈ 3.5 words/second, < 40 words per take
 - Audience stage: [Cold / Warm / Retargeting]
 - Key message to convey: [1 điều duy nhất muốn viewer nhớ]
 
@@ -178,7 +178,7 @@ DO NOT change any factual content or approved claims.
 - [ ] Không có claim nào ngoài approved list?
 - [ ] Không bắt đầu bằng tên brand?
 - [ ] Ngôn ngữ tự nhiên — không corporate?
-- [ ] Word count phù hợp với duration? (VO ≈ 2.4 từ/giây, 30s ≈ 70 từ · UGC/TopView ≈ 3.5 từ/giây, mỗi take < 40 từ)
+- [ ] Word count phù hợp với duration? (VO ≈ 2.4 từ/giây, 30s ≈ 70 từ · UGC/Flow ≤ 20 từ/take · UGC/TopView < 40 từ/take)
 - [ ] CTA có ở cuối không? (soft CTA OK: "link in bio", "worth trying")
 
 ---

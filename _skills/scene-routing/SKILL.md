@@ -15,8 +15,8 @@ This is a LIGHTWEIGHT storyboard (routing-level), distinct from the detailed vid
 
 Read according to the project's CLAUDE.md rules:
 1. `campaigns/[campaign]/brief.md` — hook direction, key message, audience stage
-2. `_products/[product]/product-brief.md` — approved claims
-3. `_brand/<brand>/target-audience.md` — customer language (xác định brand qua `_products/<sku>/product-brief.md`)
+2. `_products/<brand>/<sku>/product-brief.md` — approved claims
+3. `_brand/<brand>/target-audience.md` — customer language (xác định brand qua `_products/<brand>/<sku>/product-brief.md`)
 4. The written script (if any) in `scripts/`
 5. `_assets/broll-library/index.md` — which clips already exist and can be reused instead of generating new ones for the corresponding scene
 
@@ -37,22 +37,25 @@ For each scene, answer: **does this scene need REAL motion** (a person moving/sp
 
 Read [scene-routing-rules.md](references/scene-routing-rules.md) to handle ambiguous cases — the default now leans toward AI-VIDEO (realistic quality suits ads better); MOTION-GRAPHIC is used only when the scene is genuinely pure graphics/text (do not simulate real physical motion with code).
 
-### Step 3 — Save the storyboard
+### Step 3 — Preview image per scene, then save the storyboard
 
-Save to `campaigns/[campaign]/scripts/storyboard.md` using `_prompts/templates/storyboard-template.md` (scene codes S01, S02…).
+1. For every scene, generate ONE low-quality preview image (`gen-image.py --quality low`, correct ratio, planned framing/lighting) → `outputs/review/storyboard/[code]_P-S01_v1.png`. Scenes using a real photo (packshot, logo) point to that photo instead. Previews are for approval only — never used as video frames, never counted against the 1 gen + 1 fix limit.
+2. Write `campaigns/[campaign]/scripts/storyboard.json` following `_prompts/templates/storyboard-template.md` (scene codes S01, S02…), including for every scene: purpose, tool + render/use seconds, image prompt (`prompt_en` + `prompt_vi`), draft video prompt (`video_prompt_en` + `video_prompt_vi`), dialogue/VO (`line_en` + `line_vi`, copied verbatim from the script's per-scene table), on-screen text and output filename — the same information as the clip board, so any prompt can be copied to another platform.
+3. Run `python3 _tools/storyboard.py campaigns/[campaign]` → `storyboard.md` + `storyboard.html`.
+4. Show the user `storyboard.html` as a rendered file card (display: render). Do not send separate image links.
 
 ### Step 4 — Hand-off
 
-Stop at gate C (storyboard & danh sách asset). After approval:
-- Every scene tagged `AI-VIDEO` → `/assets` 4A–4C: image cards (4A) → approved first frame (4B) → video prompt card `_prompts/veo3/video-prompt-card.md` (4C), via `_skills/video/SKILL.md` reading order, FOR THIS SCENE ONLY.
-- Every scene tagged `MOTION-GRAPHIC` → `/edit` Mode A (`_skills/motion-graphic/SKILL.md`) — animation spec + code for this scene only.
-- Assembly of all scenes into 1 video → `/edit` (Assembly mode of `_skills/motion-graphic/SKILL.md`).
+The storyboard is part of gate 1 (plan) — continue to the image cards, stop at the end of gate 1. After approval:
+- Every scene tagged `AI-VIDEO` → gate 2: real first-frame image (generated + QC) → video prompt card `_prompts/veo3/video-prompt-card.md`, via `_skills/video/SKILL.md` reading order, FOR THIS SCENE ONLY.
+- Every scene tagged `MOTION-GRAPHIC` → gate 3, Mode A of `_skills/motion-graphic/SKILL.md` — animation spec + code for this scene only.
+- Assembly of all scenes into 1 video → gate 3 (Assembly mode of `_skills/motion-graphic/SKILL.md`).
 
 ---
 
-## Output format — `storyboard.md`
+## Output format
 
-Use `_prompts/templates/storyboard-template.md` exactly (scene codes S01, S02…; scene breakdown, assembly notes, danh sách ảnh, danh sách asset). Do not invent a shorter table.
+`storyboard.json` per `_prompts/templates/storyboard-template.md` → rendered by `_tools/storyboard.py`. Never hand-write `storyboard.md`.
 
 ---
 
@@ -61,5 +64,6 @@ Use `_prompts/templates/storyboard-template.md` exactly (scene codes S01, S02…
 - Do not decide the route on your own if the case is ambiguous — always read `scene-routing-rules.md` before assigning a tag.
 - Do not skip this step when the video has ≥2 scenes, even if the user does not explicitly ask to "make a storyboard" — if the task is "make a 15s video ad", run through this routing step first by default.
 - One scene = one rendered clip by default. Never merge scenes into a single clip unless the user asks — propose it as an option instead.
-- Fill every column of `_prompts/templates/storyboard-template.md` (start/end frame, one main action, one camera move, transition, AI-risk + simplification); total duration must equal the brief exactly.
+- Fill every field of each scene in `storyboard.json` (image, visual_vi, vo, onscreen, route, prompt_en, prompt_vi; camera/transition/AI-risk go in `notes_vi`); total duration must equal the brief exactly.
+- Process products (nail, skincare, makeup): scenes follow the real steps (apply → cure/absorb → result). Reduce motion complexity to lower AI risk — never drop the core action (e.g. the hand holding the brush).
 - The storyboard at this step does NOT yet need detailed camera/lighting for AI-VIDEO scenes — that belongs to the video prompt card at `/assets` 4C.

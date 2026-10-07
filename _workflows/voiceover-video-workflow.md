@@ -11,7 +11,7 @@
 | 2 Storyboard | `/storyboard` | ⛔C storyboard + danh sách asset |
 | 3 Ảnh + prompt video | `/assets` | ⛔4A prompt ảnh → ⛔4B duyệt ảnh → ⛔4C prompt video |
 | 4 Âm thanh + VO | `/assets` | ⛔4D bảng âm thanh → Claude gen VO |
-| 4E Bàn giao | `/assets` | ⛔4E `handoff.md` → người dùng render video theo mục A |
+| 4E Bàn giao | `/assets` | ⛔4E bảng clip (`clip-board.html`) → tạo clip · `handoff.md` (âm thanh, dựng) |
 | (kiểm asset) | `/check` | ⛔D |
 | 5–6 Dựng + export | `/edit` | ⛔E |
 
@@ -20,7 +20,7 @@
 ## Trước khi bắt đầu
 
 1. Campaign folder + `brief.md` + `status.md` do `/start` tạo (không copy `_template` bằng tay). Brief phải có key message DUY NHẤT, audience stage, duration, ratio
-2. Xác định brand từ `_products/[sản-phẩm]/product-brief.md` (trường **Brand**) → đọc `_brand/<brand>/brand-brief.md`, `_brand/<brand>/target-audience.md`, và phần APPROVED của product-brief
+2. Xác định brand từ `_products/<brand>/<sku>/product-brief.md` (trường **Brand**) → đọc `_brand/<brand>/brand-brief.md`, `_brand/<brand>/target-audience.md`, và phần APPROVED của product-brief
 3. Có nhân vật xuất hiện → đọc `_characters/[nhân-vật]/profile.md` + list `reference-images/`
 
 ---
@@ -91,10 +91,10 @@ Connector lỗi / hết credit → xuất thẻ để user tự gen trên eleven
 
 ## Step 4E: Bộ bàn giao — `/assets` 4E
 
-Gom thẻ video đã duyệt (4C) + audio (4D) vào `prompts-used/handoff.md` theo `_prompts/handoff-template.md`.
+Thẻ video đã duyệt (4C) → `prompts-used/clips.json` → `python3 _tools/clip-board.py campaigns/[campaign]` → **bảng clip** gửi user (đây là chỗ user nhận prompt video). Audio (4D) + hướng dẫn dựng → `prompts-used/handoff.md`. Theo `_prompts/handoff-template.md`.
 
 ### ⛔ Cổng 4E — duyệt bộ bàn giao
-Sau 4E: **người dùng tự render** clip Veo theo `handoff.md` mục A (Google AI Studio / Flow) — Claude không gọi API gen video. Bỏ file vào `outputs/videos/` đúng tên ghi trong thẻ (`[code]_S01_[mô-tả]_v1.mp4`). Xong → `/check` (⛔D; đo clip bằng `mdls` chỉ để ước lượng so slot).
+Sau 4E: tạo clip theo bảng clip — Claude gen nếu `VIDEO_TOOL` = `higgsfield`/`topview` (MCP/API, 1 gen + 1 sửa/clip); `flow`/`other` → **người dùng tự render** theo bảng. File vào `outputs/videos/` đúng tên ở cột "Lưu về". Xong → chạy lại `clip-board.py` để duyệt (khung hình thật, lời, độ dài) → cổng 3.
 
 ---
 

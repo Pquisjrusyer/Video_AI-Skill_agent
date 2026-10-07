@@ -40,7 +40,15 @@
 "[Soft CTA: VD: 'Link is in the comments', 'Worth trying']"
 ```
 
-**Word count:** [XX] từ / [XX] giây — VO/ElevenLabs ≈ 2.4 từ/giây (30s ≈ 70 từ) · UGC/TopView ≈ 3.5 từ/giây, mỗi take < 40 từ
+## Lời theo cảnh (EN + dịch VI — bắt buộc)
+
+| Cảnh | Thời gian | Lời thoại / VO (EN, nguyên văn) | Dịch (VI) | Chữ trên màn hình |
+|---|---|---|---|---|
+| S01 | 0.0–3.5s | | | |
+
+> Bảng này là nguồn cho `line_en` / `line_vi` trong `storyboard.json` và `clips.json` — chép nguyên văn, không viết lại.
+
+**Word count:** [XX] từ / [XX] giây — VO/ElevenLabs ≈ 2.4 từ/giây (30s ≈ 70 từ) · UGC/Google Flow ≤ 20 từ/take (8s) · UGC/TopView ≈ 3.5 từ/giây, mỗi take < 40 từ
 
 ---
 
@@ -66,7 +74,7 @@
 
 ## VO / TTS direction
 
-> Hướng dẫn giọng đọc cho ElevenLabs (Voiceover) hoặc TopView TTS (UGC) — giọng, pace, chỗ nghỉ
+> Hướng dẫn giọng đọc cho ElevenLabs (Voiceover) hoặc mô tả giọng trong thẻ take UGC (Flow) / TopView TTS — giọng, pace, chỗ nghỉ
 
 **Delivery style:** [VD: Calm, genuine — NOT excited. Natural pauses before key benefit lines.]
 

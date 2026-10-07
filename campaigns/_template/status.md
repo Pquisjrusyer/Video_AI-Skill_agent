@@ -5,9 +5,10 @@
 
 | Cổng | Gồm | Trạng thái | Duyệt bởi | Ngày |
 |---|---|---|---|---|
-| 1. Kế hoạch | `brief.md` · `scripts/script.md` · `scripts/storyboard.md` · thẻ ảnh trong `prompts-used/prompt-pack.md` | ☐ | | |
-| 2. Ảnh | QC ảnh · thẻ video · `audio-plan.md` · VO · `handoff.md` | ☐ | | |
-| 3. Final | kiểm file · review · `outputs/final/` | ☐ | | |
+| 1. Kế hoạch | brief (+ claim nếu sản phẩm mới) · nhân vật · `scripts/script.md` · `scripts/storyboard.html` · thẻ ảnh | ☐ | | |
+| 2a. Ảnh | ảnh thật + QC (đúng nhân vật) · `clips.json` → `clip-board.html` (duyệt trước khi gen clip) | ☐ | | |
+| 2b. Clip + âm thanh | clip · VO · nhạc · SFX · bảng clip chạy lại · `handoff.md` | ☐ | | |
+| 3. Final | kiểm đủ file · dựng · `review-board.html` · `outputs/final/` | ☐ | | |
 
 ☐ chưa làm · ◐ đang làm · ☑ xong, chờ duyệt · ✅ đã duyệt
 

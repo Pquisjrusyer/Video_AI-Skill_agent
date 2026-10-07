@@ -9,8 +9,8 @@
 
 1. Cài **Google Drive for desktop**, xin quyền Shared drive **VIDEO AI (V2)**, chuột phải folder → **Available offline**.
 2. Cài **Claude desktop** → tab **Code** → chọn folder `VIDEO AI (V2)`.
-3. Nói: **"set up dự án"** → Claude tự cài Python, Node.js, faster-whisper và mở hộp thoại để bạn dán **key OpenAI** (gen ảnh). Bạn chỉ bấm Install/Continue, nhập mật khẩu máy khi được hỏi.
-4. Bật connector **ElevenLabs** (claude.ai → Settings → Connectors) để Claude gen giọng đọc.
+3. Nói: **"set up dự án"** → Claude **hỏi bạn chọn công cụ** cho từng việc (ảnh, video, UGC, giọng đọc, nhạc — có gợi ý sẵn), rồi tự cài đúng thứ cần trên Mac hoặc Windows và mở hộp thoại để bạn dán key (nếu cần). Bạn chỉ bấm Install/Yes, nhập mật khẩu máy khi được hỏi.
+4. Nếu chọn ElevenLabs: bật connector **ElevenLabs** (claude.ai → Settings → Connectors). Đổi công cụ sau này: nói **"đổi công cụ"**.
 
 Chi tiết + lỗi hay gặp: `_workflows/setup-guide.md`.
 
@@ -23,8 +23,10 @@ Bạn: "làm video 15s cho sản phẩm X, link …"
   │
   ▼
 CỔNG 1 — KẾ HOẠCH ─────────────────────────────────────────
-  Claude: hỏi chốt format (1 câu) → brief → script → storyboard → thẻ prompt ảnh
-  Bạn:    đọc, góp ý → "ok cổng 1"   (chưa gen ảnh, sửa kế hoạch không tốn tiền)
+  Claude: hỏi bạn có brief chưa (có → gửi để Claude bám theo · chưa → Claude gợi ý 2–3 brief từ link sản phẩm)
+          → chốt format → brief → script → storyboard CÓ ẢNH minh hoạ từng cảnh
+          (prompt kèm dịch tiếng Việt) → thẻ prompt ảnh
+  Bạn:    xem storyboard (hiện thẳng trong chat), góp ý theo cảnh → "ok cổng 1"
   │
   ▼
 CỔNG 2 — ẢNH ──────────────────────────────────────────────
@@ -51,10 +53,10 @@ Muốn xem giữa chừng → dặn trước: *"dừng cho mình xem script trư
 | Việc | Ai |
 |---|---|
 | Brief, script, storyboard, prompt ảnh/video, bảng âm thanh | Claude |
-| Gen ảnh (GPT Image) | **Claude**, ở cổng 2 (cần key OpenAI — nói "set up dự án"; đổi key: "đổi key OpenAI") |
+| Gen ảnh (GPT Image) | **Claude** (nếu chọn ở setup): ảnh minh hoạ storyboard ở cổng 1, ảnh thật ở cổng 2. Đổi key: "đổi key OpenAI" |
 | Sửa tay ảnh Claude đã note | **Bạn** (chatgpt.com / Photoshop / Canva) → thả lại `outputs/images/` đúng tên |
-| Gen ảnh Nano Banana (Gemini) · render video (Flow/Veo, TopView) · chọn nhạc, SFX | **Bạn**, theo thẻ Claude viết |
-| Gen giọng đọc (VO) | Claude qua connector ElevenLabs → **bạn tải file về** |
+| Gen ảnh Nano Banana (Gemini) · render video trên Google Flow khi test (TopView / Higgsfield thì Claude gen qua MCP/API) · chọn nhạc, SFX | **Bạn**, theo thẻ Claude viết |
+| Gen giọng đọc (VO) | **Claude**, theo công cụ đã chọn: connector ElevenLabs hoặc OpenAI TTS |
 | QC ảnh/clip, dựng video, xuất final | Claude |
 | Duyệt cuối mỗi cổng | Người phụ trách (Account / Creative lead) |
 
@@ -71,6 +73,7 @@ Muốn xem giữa chừng → dặn trước: *"dừng cho mình xem script trư
 | Báo đã gen xong | "ảnh xong rồi" · "clip xong rồi" |
 | Dừng giữa chừng | "dừng cho mình xem storyboard" |
 | Kiểm tra máy | "set up dự án" |
+| Đổi công cụ (ảnh / video / UGC / giọng / nhạc) | "đổi công cụ" |
 
 ---
 
@@ -79,7 +82,7 @@ Muốn xem giữa chừng → dặn trước: *"dừng cho mình xem script trư
 ```
 campaigns/[YYYY-MM]_[tên]/
 ├── status.md          ← MỞ FILE NÀY để biết đang ở cổng nào, ai làm tiếp
-├── brief.md · scripts/script.md · scripts/storyboard.md
+├── brief.md · scripts/script.md · scripts/storyboard.html (storyboard có ảnh) + .md
 ├── prompts-used/      ← thẻ prompt ảnh/video, bảng âm thanh, bộ bàn giao (handoff.md)
 └── outputs/
     ├── images/  ← bạn thả ảnh vào đây
@@ -106,6 +109,6 @@ Gen lại → tăng số: `_v2`, `_v3`.
 ## 6. Quy tắc cần nhớ
 
 - **1 script = 1 campaign** (1 folder riêng). Dùng lại nhân vật / ảnh seed giữa các campaign thoải mái.
-- Brand nào thì chỉ dùng context brand đó (`_brand/`). Claim chỉ lấy từ danh sách APPROVED trong `_products/[sp]/product-brief.md`.
+- Brand nào thì chỉ dùng context brand đó (`_brand/`). Claim chỉ lấy từ danh sách APPROVED trong `_products/<brand>/<sku>/product-brief.md`.
 - **Không dán API key / mật khẩu vào chat.**
 - Trước khi upload Meta: bật **AI disclosure**, kiểm lip sync (xem 1.5x), logo/màu/chữ trên bao bì đúng, file lấy từ `outputs/final/`.

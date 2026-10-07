@@ -51,7 +51,7 @@ Distinguishing features: [VD: Small freckles across nose, warm smile]
 
 ---
 
-## Voice Profile (dùng cho ElevenLabs VO / TopView TTS)
+## Voice Profile (dùng cho ElevenLabs / OpenAI TTS VO, mô tả giọng trong thẻ take Google Flow, TopView TTS)
 
 ```
 Accent: American English, neutral / slight Pacific Northwest

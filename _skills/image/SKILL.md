@@ -70,7 +70,8 @@ Constraints: <no extra objects, no drift, ...>
 
 # Gen GPT Image — Claude chạy (cổng 2, sau "ok cổng 1")
 
-Không gen ở cổng 1: kế hoạch chưa duyệt thì ảnh dễ thành bỏ.
+Cổng 1 chỉ gen **ảnh minh hoạ storyboard** (`--quality low`, lưu `outputs/review/storyboard/`, không tính lượt, không dùng làm khung video — xem `_prompts/templates/storyboard-template.md`). Ảnh thật chỉ gen sau "ok cổng 1".
+User chọn tự gen ảnh ở setup (`IMAGE_TOOL=self`) → chỉ xuất thẻ, không chạy mục này.
 
 1. **Báo trước 1 lần:** liệt kê các ảnh sắp gen (ID · ratio · quality · số ref), chia đợt theo phụ thuộc. User OK mới chạy. Không báo giá.
 2. **Gen theo thứ tự phụ thuộc:** đợt ① ảnh nền (seed nhân vật, ảnh sản phẩm) → QC → pass mới sang đợt ② (keyframe dùng ① làm ref). Các ảnh cùng đợt, không phụ thuộc nhau → chạy song song (nhiều lệnh Bash trong 1 lượt).
@@ -80,20 +81,22 @@ Không gen ở cổng 1: kế hoạch chưa duyệt thì ảnh dễ thành bỏ.
    ```
    - `--ref` **đúng thứ tự** REFERENCE IMAGE ROLES trên thẻ (Image 1 = `--ref` đầu tiên).
    - `--quality`: `medium` mặc định · `high` khi ảnh có chữ/label cần đọc được hoặc là seed nhân vật · không dùng `low` cho ảnh làm khung video.
-4. **QC** (thumbnail `sips -Z 768`) theo checklist QC trên thẻ.
+4. **QC** (thumbnail `python3 _tools/thumb.py <ảnh> <scratchpad>/qc.jpg 768`) theo checklist QC trên thẻ. Cho user xem ảnh bằng file card hiển thị trực tiếp, không dán link.
    - Pass → ghi `worked` cạnh thẻ trong `prompt-pack.md`.
    - Lỗi → **1 lần sửa duy nhất**: edit sửa đúng 1 lỗi nặng nhất, `--ref <ảnh v1>` làm Image 1 + ref gốc, prompt dạng `Change / Preserve / Constraints`, lưu `_v2`. Ghi `needs adjustment`.
    - v2 vẫn lỗi → **dừng ảnh đó**, không gen nữa. Ghi `failed` + note cho user tự sửa tay: lỗi gì, ở đâu, gợi ý sửa (prompt edit để dán vào chatgpt.com, hoặc sửa trong Photoshop/Canva). Tiếp tục ảnh khác.
-5. **Exit code của script:**
+5. **Nhiều nhà cung cấp + đổi khi lỗi:** nhà mặc định = `IMAGE_PROVIDER` trong prefs (openai nếu chưa chọn); xem danh sách: `python3 _tools/gen-image.py --list-providers` (có 3 nhà **miễn phí**: cloudflare — có ảnh tham chiếu, pollinations, huggingface; user thêm được nhà khác có API tương thích OpenAI qua mục "Khác — tự thêm" trong popup → id `custom:<tên>`). Lỗi key / hết credit / timeout → script **tự mở popup** (`_tools/pick-provider.sh`): user chọn nhà khác + dán key → chạy lại đúng ảnh đó, lần lỗi không tính lượt. Script in 1 dòng `🔮 [câu thần chú]` → Claude **chép nguyên câu đó** cho user, kèm "→ đã chuyển sang [nhà mới]". User tự đọc thần chú → skill `goi-hon`. Nhà không nhận ảnh tham chiếu → script bỏ ref và in ⚠️ → QC kỹ label sản phẩm / mặt nhân vật. Ảnh minh hoạ storyboard (cổng 1) hợp dùng nhà miễn phí.
+6. **Exit code của script:**
    | Code | Nghĩa | Làm |
    |---|---|---|
    | 0 | OK | QC |
    | 2 | Bộ lọc an toàn chặn | Viết lại prompt 1 lần (bỏ từ nhạy cảm về da/cơ thể, mô tả trung tính) — lần chạy bị chặn không tính lượt. Vẫn chặn → note user tự gen |
    | 3 | Hết lượt (đã gen + sửa) | Note user tự sửa tay như bước 4 |
-   | 4 | Thiếu key / key sai / hết credit | Dừng gen cả loạt, báo user 1 lần ("đổi key OpenAI" hoặc nạp Billing). Các ảnh còn lại → thẻ tự gen |
+   | 4 | Key sai / hết credit / timeout **và user huỷ popup đổi nhà cung cấp** | Dừng gen cả loạt, báo user 1 lần. Các ảnh còn lại → thẻ tự gen |
    | 1 | Lỗi khác (file ref không thấy, mạng sau 3 lần thử, ghi đè) | Sửa nguyên nhân theo thông báo rồi chạy lại |
-6. **Label sản phẩm:** luôn đưa ảnh sản phẩm thật (`_products/<sku>/reference-images/`) làm ref, `quality: high`, mỗi ảnh chỉ 1 sản phẩm. Packshot / end card cần label đúng 100% → dùng ảnh thật ghép ở Remotion, không gen.
-7. Log mọi lượt gen (kèm prompt): `outputs/images/_gen-log.jsonl` — dùng để lặp lại ảnh đạt và đối chiếu Usage trên platform.openai.com.
+7. **Nhân vật — không để sai:** ảnh có người → `--ref _characters/<tên>/reference-images/<tên>-face-ref-01.png` là **Image 1** + cờ `--require-ref` (không cho rơi sang nhà không nhận ref) + dán **IDENTITY LOCK** (`profile.md`) nguyên văn vào prompt. QC bắt buộc ☐ đúng nhân vật (dáng mặt, mắt, tóc, tông da, nét riêng, móng). Ảnh label sản phẩm cũng dùng `--require-ref`. Chi tiết: `_workflows/character-intake.md`.
+8. **Label sản phẩm:** luôn đưa ảnh sản phẩm thật (`_products/<brand>/<sku>/reference-images/`) làm ref, `quality: high`, mỗi ảnh chỉ 1 sản phẩm. Packshot / end card cần label đúng 100% → dùng ảnh thật ghép ở Remotion, không gen.
+9. Log mọi lượt gen (kèm prompt): `outputs/images/_gen-log.jsonl` — dùng để lặp lại ảnh đạt và đối chiếu Usage trên platform.openai.com.
 
 ---
 

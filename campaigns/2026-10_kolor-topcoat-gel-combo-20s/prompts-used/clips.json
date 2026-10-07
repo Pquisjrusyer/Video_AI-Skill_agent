@@ -1,0 +1,86 @@
+{
+  "campaign": "KOLOR-2026-10-COMBO",
+  "title": "Top Coat & Gel Combo 20s — Voiceover",
+  "wps": 2.4,
+  "howto": "Google Flow → Veo 3.1 → Frames to Video → upload ảnh khung đầu → 9:16 → dán prompt EN → tạo → tải 1080p → lưu đúng tên ở dòng 'Lưu về' vào outputs/videos/",
+  "clips": [
+    {
+      "id": "S01", "time": "0.0–3.0s", "purpose": "Hook: nét cọ đen đầu tiên",
+      "tool": "Flow · Veo 3.1 · Frames to Video · 9:16",
+      "render_s": 8, "use_s": 3.0,
+      "first_frame": "outputs/images/KOLOR-2026-10-COMBO_B-01_S01-first-stroke_v2.png",
+      "prompt_en": "Maintain the subject from the first frame. Static 100mm macro view, very slight push-in toward the middle finger. From 0 to 1.5s the technician's hand lifts the flat black brush off the skin and moves it forward onto the middle fingernail, the brush tip settling at the cuticle. From 1.5 to 4s the brush draws one slow, steady stroke from the cuticle to the free edge, leaving a smooth glossy jet-black stripe down the center of the nail, then lifts away. The client's hand stays completely still and the skin stays clean. Soft daylight from frame-left, bright light grey background. Ends on the middle nail with a single black stripe, other nails bare. Do not alter the brush, the white cap, or the hand shape.\n\nAudio: No dialogue, no music, no sound effects; quiet natural ambience only.",
+      "prompt_vi": "Giữ chủ thể như khung đầu. Macro 100mm đứng yên, đẩy vào rất nhẹ về ngón giữa. 0–1.5s: tay thợ nhấc cọ dẹt đen khỏi da, đưa lên móng giữa, đầu cọ đặt ở gốc móng. 1.5–4s: cọ kéo 1 nét chậm, đều từ gốc tới mép móng, để lại vệt đen tuyền bóng mượt giữa móng, rồi nhấc ra. Tay khách đứng yên, da sạch. Sáng mềm từ trái, nền xám nhạt. Kết thúc: móng giữa có 1 vệt đen, các móng khác trần. Không đổi cọ, nắp trắng, dáng tay. Âm thanh: không thoại, không nhạc, không SFX; chỉ tiếng nền tự nhiên nhẹ.",
+      "line_en": "Two bottles. Endless sets.",
+      "line_vi": "Hai chai. Vô số bộ móng.",
+      "audio": "vo:outputs/audio/KOLOR-2026-10-COMBO_vo-S01_v1.mp3",
+      "notes_vi": "Ảnh khung đầu: đầu cọ đang chạm da đốt ngón (ảnh Flux, chấp nhận vì dự án test) → prompt cho cọ đi lên móng trước. Dùng đoạn có nét cọ trên móng (~1.5–4.5s). Clip mute khi dựng.",
+      "out": "outputs/videos/KOLOR-2026-10-COMBO_S01_first-stroke_v1.mp4"
+    },
+    {
+      "id": "S02", "time": "3.0–6.5s", "purpose": "Proof: màu đậm, phủ đều",
+      "tool": "Flow · Veo 3.1 · Frames to Video · 9:16",
+      "render_s": 8, "use_s": 3.5,
+      "first_frame": "outputs/images/KOLOR-2026-10-COMBO_B-02_S02-even-coverage_v1.png",
+      "prompt_en": "Maintain the subject from the first frame. Static close-up camera. The technician glides the black brush from the cuticle to the tip of the ring fingernail in two smooth passes, leaving a fully opaque, even jet-black coat with no streaks, then lifts the brush out of frame to the right. The client's hand stays still. The Super Black bottle in the background stays still and in soft focus. Soft daylight from frame-left. Ends on three opaque black nails, brush gone. Do not alter the bottle color, label, or packaging shape.\n\nAudio: No dialogue, no music, no sound effects; quiet natural ambience only.",
+      "prompt_vi": "Giữ chủ thể như khung đầu. Máy cận đứng yên. Thợ lướt cọ đen 2 nét mượt từ gốc tới đầu móng áp út, để lại lớp đen kín, đều, không vệt, rồi nhấc cọ ra khỏi khung bên phải. Tay khách đứng yên. Chai Super Black phía sau đứng yên, mờ. Sáng mềm từ trái. Kết thúc: 3 móng đen kín, không còn cọ. Không đổi màu, nhãn, dáng chai. Âm thanh: không thoại, không nhạc, không SFX.",
+      "line_en": "Highly pigmented black. Smooth, even coverage.",
+      "line_vi": "Màu đen đậm. Phủ mượt, đều.",
+      "audio": "vo:outputs/audio/KOLOR-2026-10-COMBO_vo-S02_v1.mp3",
+      "notes_vi": "Ảnh khung đầu: dụng cụ giống nhíp + đầu ngón lem đen (ảnh Flux, chấp nhận vì test). Nếu clip để lộ lem đen rõ → cắt cận hơn khi dựng.",
+      "out": "outputs/videos/KOLOR-2026-10-COMBO_S02_even-coverage_v1.mp4"
+    },
+    {
+      "id": "S03", "time": "6.5–9.0s", "purpose": "Hơ đèn UV/LED",
+      "tool": "Flow · Veo 3.1 · Frames to Video · 9:16",
+      "render_s": 8, "use_s": 2.5,
+      "first_frame": "outputs/images/KOLOR-2026-10-COMBO_B-03_S03-led-cure_v2.png",
+      "prompt_en": "Maintain the subject from the first frame. Static camera. The hand settles a little deeper into the lamp opening and rests still. At 1s the lamp switches on: a cool white-violet LED glow fills the inside of the dome and lights the black nails from within, with a soft glow spilling onto the white table. The lamp shell stays plain white with no text. Ends with the hand resting inside the glowing lamp. Do not alter the lamp shape or the hand.\n\nAudio: No dialogue, no music, no sound effects; quiet natural ambience only.",
+      "prompt_vi": "Giữ chủ thể như khung đầu. Máy đứng yên. Tay đưa sâu thêm một chút vào miệng đèn rồi nằm yên. Giây 1: đèn bật, ánh LED trắng-tím lạnh tràn trong vòm, hắt lên móng đen từ bên trong, quầng sáng nhẹ loang ra mặt bàn trắng. Vỏ đèn trắng trơn, không chữ. Kết thúc: tay nằm yên trong đèn đang sáng. Không đổi dáng đèn, dáng tay. Âm thanh: không thoại, không nhạc, không SFX.",
+      "line_en": "Cures fast under UV or LED.",
+      "line_vi": "Khô nhanh dưới đèn UV hoặc LED.",
+      "audio": "vo:outputs/audio/KOLOR-2026-10-COMBO_vo-S03_v1.mp3",
+      "notes_vi": "Dùng đoạn quanh lúc đèn bật (~0.5–3.0s). SFX tick bật đèn thêm khi dựng.",
+      "out": "outputs/videos/KOLOR-2026-10-COMBO_S03_led-cure_v1.mp4"
+    },
+    {
+      "id": "S04", "time": "9.0–13.0s", "purpose": "Top coat: satin thành bóng gương",
+      "tool": "Flow · Veo 3.1 · Frames to Video · 9:16",
+      "render_s": 8, "use_s": 4.0,
+      "first_frame": "outputs/images/KOLOR-2026-10-COMBO_B-04_S04-topcoat_v2.png",
+      "prompt_en": "Maintain the subject from the first frame. Static 100mm macro camera. From 0 to 1.5s the technician moves the brush with clear top coat up onto the middle fingernail and sets the tip at the cuticle; the small clear drop on the skin disappears. From 1.5 to 5s the brush sweeps the clear top coat from cuticle to tip in one slow stroke; where it passes, the satin black turns mirror-glossy and a sharp white window reflection glides along the nail. The client's hand stays still. Soft daylight from frame-left. Ends on one mirror-glossy middle nail beside satin nails, brush lifting away. Top coat stays completely colorless.\n\nAudio: No dialogue, no music, no sound effects; quiet natural ambience only.",
+      "prompt_vi": "Giữ chủ thể như khung đầu. Macro 100mm đứng yên. 0–1.5s: thợ đưa cọ top coat trong lên móng giữa, đặt đầu cọ ở gốc móng; giọt trong trên da biến mất. 1.5–5s: cọ quét top coat 1 nét chậm từ gốc tới đầu; chỗ cọ đi qua, đen satin thành bóng gương, vệt phản chiếu cửa sổ trắng lướt dọc móng. Tay khách đứng yên. Sáng mềm từ trái. Kết thúc: móng giữa bóng gương cạnh các móng satin, cọ nhấc ra. Top coat hoàn toàn không màu. Âm thanh: không thoại, không nhạc, không SFX.",
+      "line_en": "Then the top coat. Super glossy. No wipe.",
+      "line_vi": "Rồi tới top coat. Siêu bóng. Không cần lau.",
+      "audio": "vo:outputs/audio/KOLOR-2026-10-COMBO_vo-S04_v1.mp3",
+      "notes_vi": "Ảnh khung đầu: cọ + giọt top coat đang ở trên da ngón áp út (ảnh Flux). Dùng đoạn quét bóng (~1.5–5.5s).",
+      "out": "outputs/videos/KOLOR-2026-10-COMBO_S04_topcoat-glass_v1.mp4"
+    },
+    {
+      "id": "S05", "time": "13.0–16.5s", "purpose": "Kết quả: móng đen bóng gương",
+      "tool": "Flow · Veo 3.1 · Frames to Video · 9:16",
+      "render_s": 8, "use_s": 3.5,
+      "first_frame": "outputs/images/KOLOR-2026-10-COMBO_B-05_S05-mirror-shine_v2.png",
+      "prompt_en": "Maintain the subject from the first frame. Static camera. The hand lifts slightly off the table and rotates slowly at the wrist by a few degrees; a long bright window highlight glides across all the glossy jet-black nails from left to right between 1s and 3s. The two bottles behind the hand stay still and in soft focus. Soft daylight from frame-left. Ends with the hand angled toward camera, nails gleaming, held still for one second. Do not alter the bottle colors, labels, or packaging shape.\n\nAudio: No dialogue, no music, no sound effects; quiet natural ambience only.",
+      "prompt_vi": "Giữ chủ thể như khung đầu. Máy đứng yên. Tay nhấc nhẹ khỏi bàn, cổ tay xoay chậm vài độ; từ giây 1 tới 3, vệt sáng cửa sổ dài lướt từ trái sang phải qua các móng đen bóng. 2 chai phía sau đứng yên, mờ. Sáng mềm từ trái. Kết thúc: tay nghiêng về máy, móng lấp lánh, giữ yên 1 giây. Không đổi màu, nhãn, dáng chai. Âm thanh: không thoại, không nhạc, không SFX.",
+      "line_en": "Seals in your color. Helps prevent chipping.",
+      "line_vi": "Khoá màu lại. Giúp hạn chế mẻ móng.",
+      "audio": "vo:outputs/audio/KOLOR-2026-10-COMBO_vo-S05_v1.mp3",
+      "notes_vi": "Ảnh khung đầu: 1 móng áp út còn loang (ảnh Flux). Vệt sáng lướt có thể che bớt. SFX ting nhẹ khi vệt sáng lướt.",
+      "out": "outputs/videos/KOLOR-2026-10-COMBO_S05_mirror-shine_v1.mp4"
+    },
+    {
+      "id": "S06", "time": "16.5–20.0s", "purpose": "End card + CTA",
+      "tool": "Remotion",
+      "render_s": 0, "use_s": 3.5,
+      "first_frame": "../../_products/Kolor/kolor-topcoat-gel-combo/reference-images/combo_official-01.jpg",
+      "prompt_en": "",
+      "prompt_vi": "Không render. Ảnh thật combo_official-01.jpg → crossfade sang combo_official-05.jpg ở 1.8s; scale 1.00 → 1.05; chữ fade-up.",
+      "line_en": "The Kolor Combo. Black or white.",
+      "line_vi": "Combo Kolor. Đen hoặc trắng.",
+      "audio": "vo:outputs/audio/KOLOR-2026-10-COMBO_vo-S06_v1.mp3",
+      "notes_vi": "Asset nguồn: _products/Kolor/kolor-topcoat-gel-combo/reference-images/combo_official-01.jpg + -05.jpg. Chữ: logo kolor / Top Coat + Gel Polish Combo / Black or White / Shop now.",
+      "out": "remotion-project (S06)"
+    }
+  ]
+}

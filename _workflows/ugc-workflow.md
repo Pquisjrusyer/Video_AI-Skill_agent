@@ -1,11 +1,11 @@
-> **Trước khi bắt đầu:** Workflow này build video UGC testimonial bằng **TopView Avatar4** (avatar ảnh tĩnh + TTS — người dùng tự gen trên web, Claude chỉ xuất thẻ take), KHÔNG dùng Veo/Kling như `_skills/video/`. Vẫn cần đọc `_skills/scene-routing/` trước khi mở phần assembly, và `_skills/motion-graphic/SKILL.md` khi tới bước ghép (Remotion) — 2 skill đó dùng nguyên bản, không có version riêng cho UGC.
+> **Trước khi bắt đầu:** Workflow này build video UGC testimonial. Công cụ làm take theo lựa chọn ở setup (`UGC_TOOL` trong `~/.config/ai-studio/prefs.env`): **`topview` / `higgsfield` = công cụ chính, Claude gen qua MCP hoặc API** (Bước 4B) · `flow` = Google Flow, **chỉ để test**, user tự render (Bước 4A). Vẫn cần đọc `_skills/scene-routing/` trước khi mở phần assembly, và `_skills/motion-graphic/SKILL.md` khi tới bước ghép (Remotion) — 2 skill đó dùng nguyên bản, không có version riêng cho UGC.
 > **Đúc kết từ:** 1 campaign UGC thật — mọi lỗi/fix trong workflow này đã dính thật, không phải lý thuyết.
 
-# Workflow SOP — UGC Video (TopView Avatar4)
+# Workflow SOP — UGC Video (Google Flow / TopView)
 
 > **Output cuối:** 1 video testimonial 9:16 Meta-ready trong `outputs/final/`, avatar AI nói theo script, có broll cutaway minh hoạ theo từ khoá
-> **Tools:** GPT Image 2 (seed + ảnh take — Claude gen qua `_tools/gen-image.py`) → TopView web (avatar4/avatar4Fast, avatar nói — người dùng tự gen) → Remotion (ghép + broll + text overlay)
-> **Không dùng route AI-VIDEO/MOTION-GRAPHIC chuẩn của `_skills/scene-routing/`** — video này đi qua route riêng: `TOPVIEW` (avatar nói) + `BROLL-CUTAWAY` (chèn ở bước ghép) + `TEXT-ONLY`.
+> **Tools:** GPT Image 2 (seed + ảnh take — Claude gen qua `_tools/gen-image.py`) → **TopView / Higgsfield (Claude gen qua MCP/API)** hoặc Google Flow khi test (user tự render) → Remotion (ghép + broll + text overlay)
+> **Không dùng route AI-VIDEO/MOTION-GRAPHIC chuẩn của `_skills/scene-routing/`** — video này đi qua route riêng: `TAKE` (nhân vật nói) + `BROLL-CUTAWAY` (chèn ở bước ghép) + `TEXT-ONLY`.
 
 ## Bước ↔ lệnh / cổng (cổng dùng chung của 6 lệnh — không có cổng đánh số riêng)
 
@@ -16,8 +16,8 @@ Campaign folder + `brief.md` + `status.md` do `/start` tạo (⛔A). Thứ tự 
 | Bước 2 — script + chia take | `/script` | ⛔B |
 | Bước 3 — storyboard + map b-roll + danh sách asset | `/storyboard` | ⛔C |
 | Bước 1 — thẻ seed + ảnh take (sau storyboard) | `/assets` | ⛔4A thẻ ảnh (cổng 1) → Claude gen (cổng 2) → ⛔4B QC ảnh |
-| Bước 4 — thẻ take TopView | `/assets` (thay 4C) | ⛔4C |
-| Âm thanh | `/assets` | ⛔4D: N/A — âm thanh là TTS TopView trong take; ghi rõ không VO/nhạc riêng (trừ khi plan có nhạc) |
+| Bước 4 — thẻ take (4A Flow / 4B TopView) | `/assets` (thay 4C) | ⛔4C |
+| Âm thanh | `/assets` | ⛔4D: N/A — thoại nằm sẵn trong take (Veo / TTS TopView); ghi rõ không VO/nhạc riêng (trừ khi plan có nhạc) |
 | Bàn giao | `/assets` | ⛔4E: bảng take + plan ghép (`handoff.md`) → người dùng gen take |
 | Bước 5 — QC take | `/check` | ⛔D |
 | Bước 6–8 — ghép, b-roll, sub, final | `/edit` | ⛔ trong /edit: E-1 plan dựng, E-2 plan b-roll → ⛔E |
@@ -28,12 +28,14 @@ Campaign folder + `brief.md` + `status.md` do `/start` tạo (⛔A). Thứ tự 
 
 - [ ] `_brand/<brand>/brand-brief.md`, `_brand/<brand>/target-audience.md` (brand lấy từ trường **Brand** trong product-brief)
 - [ ] `_characters/[nhân-vật]/profile.md` + `voice-profile.md`
-- [ ] `_products/[sản-phẩm]/product-brief.md` — **đặc biệt mục `✅ APPROVED claims`/ingredient**. Lỗi thật đã gặp: viết "collagen peptide" vào script vì nhớ nhầm, trong khi brief chỉ approve Marine Extracts/Niacinamide/HA/Ceramide — soát lại field ingredient TRƯỚC khi viết script, không tin trí nhớ.
+- [ ] `_products/<brand>/<sku>/product-brief.md` — **đặc biệt mục `✅ APPROVED claims`/ingredient**. Lỗi thật đã gặp: viết "collagen peptide" vào script vì nhớ nhầm, trong khi brief chỉ approve Marine Extracts/Niacinamide/HA/Ceramide — soát lại field ingredient TRƯỚC khi viết script, không tin trí nhớ.
 - [ ] `_assets/broll-library/index.md` — check trước khi tính gen/tải broll mới
 
 ---
 
 ## Bước 1 — Seed ảnh nhân vật (Nano Banana Pro)
+
+> **Mới:** nhân vật chốt ở cổng 1 theo `_workflows/character-intake.md` (hỏi dùng nhân vật thế nào, import ảnh có sẵn, thẻ 3 ảnh + IDENTITY LOCK). Face-ref đã duyệt ở đó là seed — **không gen lại**. Phần dưới chỉ còn dùng cho ảnh từng take (mỗi trạng thái tay / sản phẩm), luôn `--ref <face-ref>` là Image 1 + `--require-ref`.
 
 > Làm ở `/assets` 4A, SAU khi script (B) + storyboard (C) đã duyệt — không gen seed trước script. Claude viết thẻ theo `_prompts/nano-banana/image-prompt-card.md` + `_skills/image/SKILL.md` (kèm file ref + tên file lưu), rồi gen ở cổng 2 theo mục Gen GPT Image của skill đó. Seed trước, ảnh take sau.
 
@@ -46,11 +48,22 @@ Campaign folder + `brief.md` + `status.md` do `/start` tạo (⛔A). Thứ tự 
 
 ## Bước 2 — Script + xác định số TAKE (⚠️ bước hay bị bỏ qua)
 
-TopView Avatar4 chỉ animate từ **1 ảnh tĩnh / 1 lần submit**, và mỗi lần submit đọc đúng **1 đoạn ttsText liên tục** — không đổi ảnh/pose giữa chừng 1 take.
+Cả Google Flow lẫn TopView đều animate từ **1 ảnh khung đầu / 1 lần gen**, đọc đúng **1 đoạn thoại liên tục** — không đổi ảnh/pose giữa chừng 1 take.
+
+**Giới hạn độ dài 1 take theo công cụ:**
+
+| | Google Flow (Veo 3.1) — test | TopView Avatar4 / Higgsfield |
+|---|---|---|
+| Độ dài clip | 4 / 6 / **8s tối đa** | tự pace theo câu |
+| Lời / take | **≤ 20 từ** (đã test: 20 từ nói xong ở 7.4s/8s) | < 40 từ (~3.5 từ/giây) |
+| Giọng | Veo tự tạo giọng theo mô tả → **mô tả giọng giống hệt nhau ở mọi take** | chọn 1 voice cố định |
+
+Với Flow, script 30s ≈ 4–5 take. Câu dài hơn 20 từ → tách thành 2 take (cùng ảnh trạng thái cũng được, cắt cứng khi ghép).
 
 Trước khi viết script, liệt kê **mỗi trạng thái hình ảnh khác nhau sẽ cần** (tay trống mở đầu, cầm sản phẩm A, cầm sản phẩm B, quay lại tay trống cho CTA...) — mỗi trạng thái = 1 TAKE = 1 ảnh riêng (Bước 1, gen ở `/assets`) = 1 lần submit riêng (Bước 4) = 1 điểm hard-cut khi ghép (Bước 6).
 
-**Nguyên tắc viết ttsText mỗi take — tránh rít/khó nghe:**
+**Nguyên tắc viết lời mỗi take — tránh rít/khó nghe:**
+- Flow: ≤ 20 từ/take, câu ngắn, 1 ý. Nhồi nhiều hơn → Veo nói nhanh bất thường (`veo.md` §4 Timing rule).
 - Giọng TopView (đã test: elevenlabs-v3 và minimax-v2.5) pace ổn định **~0.28s/từ** (~3.5 từ/giây) khi đọc tự nhiên.
 - Nếu 1 take cần nói nhiều nhưng bạn set kỳ vọng duration ngắn, TTS sẽ nói nhanh/rít để kịp → **không set duration cứng, để TTS tự pace theo độ dài câu**, và **giữ mỗi take dưới ~40 từ** nếu muốn nghe rõ từng chữ — chia nhỏ thành nhiều câu ngắn thay vì 1 câu dài nhồi nhiều mệnh đề.
 - ✅ Đã verify: câu 46 từ nén trong ý định 12s → nghe rít không rõ. Rút còn 30 từ, để TTS tự nói hết ~9.3s → rõ hẳn.
@@ -65,7 +78,7 @@ Trước khi viết script, liệt kê **mỗi trạng thái hình ảnh khác n
 
 Follow `_skills/scene-routing/SKILL.md`. Bảng thời gian ghi rõ: file take nào ↔ ảnh nào ↔ nội dung thoại nào ↔ có broll cutaway ở đâu.
 
-**Duration ở storyboard chỉ là ước lượng** (~3.5 từ/giây), duration thật chỉ biết sau khi take gen xong, vì TTS tự pace. Frame count thật lấy từ `scripts/visuals.json` (trường `takes`, đo theo stream video) — file này do `post_edit.py transcribe` + `plan` (Bước 7 mục 1–2) sinh ra, nên ở `/edit` phải chạy Bước 7 mục 1–2 TRƯỚC khi build assembly Bước 6. **Không dùng `mdls`**: đã đo thật, `mdls` báo dư (take A1 campaign hollow-not-tired: `mdls` 12.12s, thật 12.04s), làm vài frame cuối mỗi take bị đứng hình khi ghép.
+**Duration ở storyboard chỉ là ước lượng** (Flow ~2.5 từ/giây, tối đa 8s/take · TopView ~3.5 từ/giây), duration thật chỉ biết sau khi take gen xong. Frame count thật lấy từ `scripts/visuals.json` (trường `takes`, đo theo stream video) — file này do `post_edit.py transcribe` + `plan` (Bước 7 mục 1–2) sinh ra, nên ở `/edit` phải chạy Bước 7 mục 1–2 TRƯỚC khi build assembly Bước 6. **Không dùng `mdls`**: đã đo thật, `mdls` báo dư (take A1 campaign hollow-not-tired: `mdls` 12.12s, thật 12.04s), làm vài frame cuối mỗi take bị đứng hình khi ghép.
 
 ### 3.1 — Map script → broll, câu theo câu (làm ngay ở bước này, không để tới lúc ghép mới nghĩ)
 
@@ -105,15 +118,46 @@ Thiếu asset cho dòng "Có" nào ở 3.1 → ghi vào danh sách asset ở ⛔
 
 ---
 
-## Bước 4 — Gói thẻ TAKE → người dùng tự gen trên TopView (web) — `/assets` (thay 4C)
+## Bước 4 — Thẻ TAKE → gen take — `/assets` (thay 4C)
 
-> **Claude KHÔNG gọi API/MCP gen video.** Output của bước này là thẻ cho từng take — người dùng tự gen trên https://www.topview.ai (Avatar 4 / Photo Avatar), rồi thả file về đúng chỗ. Thẻ chỉ viết khi ảnh take đã duyệt ở 4B.
+> Thẻ chỉ viết khi ảnh take đã duyệt ở 4B. Ai gen theo `UGC_TOOL` (setup):
+> - `topview` / `higgsfield` → **4B: Claude gen** qua MCP hoặc API (`TOPVIEW_CONN` / `HIGGSFIELD_CONN`). Báo danh sách take trước khi gen, **mỗi take tối đa 1 gen + 1 sửa**. Kết nối chưa sẵn sàng / chưa có tool gọi API → xuất thẻ 4B cho user tự gen trên web.
+> - `flow` → **4A: chỉ để test** — user tự render trên Google Flow theo thẻ.
 
-### 4.1 — Mode mặc định
+### 4A — Google Flow (Veo 3.1) — chỉ để test
 
-Thẻ take ghi sẵn **avatar4** · offPeak: off. Người gen tự đổi sang avatar4Fast / offPeak nếu muốn — không dừng hỏi.
+Xuất thẻ vào `prompts-used/flow-takes.md`, mỗi take 1 thẻ. Viết theo `_skills/video/references/veo.md` §4 (dialogue syntax) + §7 (image-to-video):
 
-### 4.2 — Xuất thẻ take vào `prompts-used/topview-takes.md`
+```
+### TAKE A — [mô tả ngắn]
+Ảnh khung đầu: campaigns/[campaign]/outputs/images/[ảnh take A đã duyệt].png
+Flow:          Frames to Video (tạo video từ ảnh khung đầu) · Veo 3.1 · 9:16 · 8s
+Lưu về:        campaigns/[campaign]/outputs/videos/[code]_take-A_v1.mp4
+PROMPT (dán nguyên văn):
+Maintain the woman from the first frame. Handheld selfie framing, she looks into the camera and talks like she is filming a quick TikTok for a friend. [1 cử chỉ tự nhiên: nhẹ nhún vai / giơ sản phẩm lên ngang mặt].
+She says in a [MÔ TẢ GIỌNG — giống hệt mọi take] voice: "[lời thoại ≤ 20 từ, không em dash]"
+Audio: only her voice and quiet room tone, no music, no sound effects.
+Duration: 8 seconds.
+QC nhanh:      ☐ nói đủ, đúng chữ, không nhanh bất thường ☐ khẩu hình khớp ☐ giọng giống các take khác ☐ mặt/tay/label không biến dạng ☐ claim đúng APPROVED
+```
+
+Quy tắc khi viết thẻ Flow:
+- **Mô tả giọng** lấy từ `_characters/[nhân-vật]/voice-profile.md`, chép **nguyên văn giống nhau** ở mọi take (VD "warm, slightly raspy American female voice in her 30s, casual and unhurried"). Veo không khoá được giọng giữa các clip → đây là cách giữ giọng gần giống nhất.
+- Mỗi take ≤ 20 từ, 1 câu thoại duy nhất trong ngoặc kép, không em dash.
+- Gen 2 bản / take, chọn bản giọng giống các take trước nhất. Giọng lệch nhiều → gen lại đúng take đó, không sửa take đã đạt.
+- Mỗi ảnh take chỉ 1 sản phẩm. Tên brand khó đọc → ghi phiên âm trong ngoặc kép thoại (VD "Kolor" đọc như "color").
+
+### 4B — TopView / Higgsfield (khi `UGC_TOOL=topview` hoặc `higgsfield`) — công cụ chính
+
+**Claude gen qua MCP** (`*_CONN=mcp`): ToolSearch `topview` / `higgsfield` → dùng tool avatar / image-to-video của connector, đầu vào lấy đúng từ thẻ take bên dưới (ảnh take · lời thoại · voice · 9:16). Tải file về `outputs/videos/` đúng tên ở dòng "Lưu về".
+**Claude gen qua API** (`*_CONN=api`): key đã nhập qua popup ở setup (`TOPVIEW_API_KEY` + `TOPVIEW_UID` · `HIGGSFIELD_API_KEY` + `HIGGSFIELD_API_SECRET`, trong `~/.config/ai-studio/.env`). Chưa có tool `_tools/` gọi API → xuất thẻ cho user tự gen, ghi 1 dòng vào `status.md` mục Vấn đề.
+QC từng take như Bước 5 ngay sau khi gen. Lỗi → sửa 1 lần (rút ngắn lời / đổi ảnh), vẫn lỗi → note user.
+
+#### 4B.1 — Mode mặc định (TopView)
+
+Thẻ take ghi sẵn **avatar4** · offPeak: off. Đổi sang avatar4Fast / offPeak nếu user muốn — không dừng hỏi.
+
+#### 4B.2 — Xuất thẻ take vào `prompts-used/topview-takes.md`
 
 Mỗi take 1 thẻ, người gen không cần hỏi lại gì:
 
@@ -135,13 +179,16 @@ Quy tắc khi viết thẻ:
 - Gen tất cả take trong **cùng 1 board/project** của campaign trên TopView, tránh chạm giới hạn task đồng thời.
 - Avatar4 chuẩn có thể mất ~1 giờ/take — theo dõi % trên dashboard TopView, không phải lỗi.
 
-Sau đó: 4D ghi N/A (âm thanh = TTS TopView trong take, không VO/nhạc riêng — trừ khi plan có nhạc) → 4E gom bảng take + plan ghép vào `prompts-used/handoff.md`. **Chỉ sau ⛔4E** người dùng mới gen take, tải file về (nút Download trên TopView), đặt đúng tên ở dòng "Lưu về", tick vào `status.md`.
+Sau đó (cả 4A và 4B): 4D ghi N/A (thoại nằm sẵn trong take, không VO/nhạc riêng — trừ khi plan có nhạc) → 4E gom bảng take + plan ghép vào `prompts-used/handoff.md`. **Chỉ sau ⛔4E** mới gen take (Claude qua MCP/API, hoặc user trên web khi test / chưa kết nối), file đặt đúng tên ở dòng "Lưu về", tick vào `status.md`.
 
 ---
 
 ## Bước 5 — QC từng take trước khi ghép — `/check`
 
+Chạy `python3 _tools/clip-board.py campaigns/[campaign]` → `outputs/review/clip-board.html`: mỗi take có khung hình thật, lời nghe được so với script (chữ thiếu/thừa tô màu, % khớp) + dịch VI, cảnh báo lời bị cắt / nói nhanh. Gửi bảng cho user, rồi soát thêm các mục dưới.
+
 - [ ] Nghe rõ từng từ, không rít (nếu rít → quay lại Bước 2, rút ngắn câu, gen lại — chỉ gen lại đúng take đó)
+- [ ] (Flow) Giọng các take nghe như cùng 1 người; lời trong audio đúng nguyên văn script (Veo đôi khi tự thêm/bớt chữ → kiểm bằng transcript Bước 7 mục 1)
 - [ ] Claim/ingredient nhắc trong audio khớp `✅ APPROVED` trong product-brief
 - [ ] Duration thật lấy ở Bước 7 (`visuals.json`), không dùng `mdls` (báo dư, xem Bước 3)
 
@@ -156,7 +203,7 @@ Sau đó: 4D ghi N/A (âm thanh = TTS TopView trong take, không VO/nhạc riên
 
 - Build ở `/tmp/[campaign-slug]-remotion` (không `npm install` trong `remotion-project/` — xem `remotion-setup.md`)
 - Mỗi take = 1 `<Sequence from={} durationInFrames={}>` chứa `<OffthreadVideo>`, nối **hard cut** (không crossfade, trừ khi nghe thử thấy nối bị khựng). `durationInFrames` mỗi take lấy từ `visuals.json` (`import visuals from './visuals.json'`), không gõ cứng số đo tay, không bao giờ dùng `mdls`
-- Audio: giữ nguyên audio TTS embedded trong từng clip take — không thêm nhạc nền đè lời
+- Audio: giữ nguyên audio thoại embedded trong từng clip take (Veo / TTS TopView) — không thêm nhạc nền đè lời
 - **⛔ E-1 plan dựng (trong /edit, trước E) — trình bày plan (thứ tự take, tổng duration, vị trí overlay/broll) và chờ user xác nhận trước khi render bản final** — đúng ràng buộc trong `motion-graphic/SKILL.md`, không tự ý ghi đè file đã có trong `outputs/final/`
 
 ---
@@ -229,11 +276,12 @@ python3 _tools/post-edit/post_edit.py loudnorm /tmp/[campaign-slug]-remotion /tm
 
 | Lỗi | Nguyên nhân | Cách tránh |
 |---|---|---|
-| Audio rít, khó nghe 1 đoạn | Câu quá dài nhồi trong ý định duration ngắn | Giữ mỗi take <40 từ, để TTS tự pace |
+| Audio rít, khó nghe 1 đoạn | Câu quá dài nhồi trong ý định duration ngắn | Flow: ≤ 20 từ/take (8s). TopView: < 40 từ, để TTS tự pace |
+| (Flow) Giọng mỗi take một kiểu | Veo không khoá giọng giữa các clip | Chép nguyên văn cùng 1 mô tả giọng ở mọi take, gen 2 bản/take chọn bản giống nhất |
 | Label sản phẩm sai màu/chữ | Gen 1 ảnh có 2+ sản phẩm cùng lúc | Gen riêng từng ảnh 1-sản-phẩm |
 | Claim ingredient sai | Viết theo trí nhớ, không check lại brief | Luôn đối chiếu `✅ APPROVED` trước khi chốt script |
 | Broll nhìn chán/amateur | Card ảnh nổi cố định, không liên quan lời đang nói | Fullbleed cutaway bám từ khoá, audio giữ nguyên giọng creator |
 | B-roll lệch lời nói ~0.5s | Timing ước lượng theo vị trí từ | Transcript word-level qua `post_edit.py transcribe` + `plan` (Bước 7) |
 | Caption biến mất lúc chèn b-roll | B-roll đặt ở cấp gốc sau các take, đè lên caption nằm trong take | Assembly 3 lớp: video → `VisualsOverlay` → caption (Bước 7) |
 | Vài frame cuối mỗi take bị đứng hình | Duration đo bằng `mdls` bị dư | Lấy `durationInFrames` từ `visuals.json` |
-| TopView báo lỗi TTS ngay khi bấm gen | Em dash (—) trong script | Đổi em dash thành dấu phẩy/dấu chấm trong thẻ take |
+| TopView báo lỗi TTS ngay khi bấm gen | Em dash (—) trong script | Đổi em dash thành dấu phẩy/dấu chấm trong thẻ take (Flow cũng nên bỏ em dash) |

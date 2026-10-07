@@ -2,7 +2,7 @@
 
 Hệ thống Agent AI tự động hóa quy trình sáng tạo Video Ads & Content (Meta Ads DTC, TikTok, Reels) với quy trình 3 cổng chuẩn hóa:
 - **Kế hoạch**: Brief, Script, Storyboard, Prompt Packs.
-- **Tài nguyên**: Gen ảnh (GPT Image / Nano Banana), Gen giọng đọc (ElevenLabs), Video thẻ render (Veo 3.1 / TopView UGC).
+- **Tài nguyên**: Gen ảnh (GPT Image / Nano Banana), Gen giọng đọc (ElevenLabs), Video + UGC qua TopView / Higgsfield (MCP hoặc API; Google Flow để test). Công cụ từng việc chọn ở bước "set up dự án".
 - **Dựng hoàn thiện**: Remotion pipeline, b-roll sync theo timeline thoại và QC chuẩn Meta Ads.
 
 ---

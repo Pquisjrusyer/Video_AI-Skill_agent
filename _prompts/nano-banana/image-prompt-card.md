@@ -8,7 +8,7 @@
 Tool + cấu hình:   GPT Image 2 · ratio 9:16 · quality medium   (high nếu có label/chữ hoặc là seed)
 Lưu về:            outputs/images/[campaign-code]_[image-id]_[mô-tả-ngắn]_v[n].png   (VD: 2026-06-LAUNCH_B-01_S01-mirror_v1.png)
 Phụ thuộc:         [ảnh phải duyệt trước — VD: A-01 seed] → quyết định đợt gen
-Lệnh gen:          --ratio 9:16 --quality medium --ref [Image 1] --ref [Image 2]   (ref đúng thứ tự bên dưới)
+Lệnh gen:          --ratio 9:16 --quality medium --ref [Image 1] --ref [Image 2]   (ref đúng thứ tự bên dưới · ảnh có người / label → thêm --require-ref)
 
 REFERENCE IMAGE ROLES
 - Image 1 = [file] — vai trò: nhận diện / sản phẩm / bố cục / tư thế / chất liệu
@@ -21,6 +21,7 @@ Nếu là khung đầu của clip có hành động: chọn khoảnh khắc NGAY
 
 COMPOSITION AND CAMERA
 Cỡ cảnh · góc máy · tiền cảnh/hậu cảnh · vị trí chủ thể · vùng trống cho chữ (vị trí cụ thể) · tỷ lệ.
+**Vùng an toàn** theo nền tảng (`brief.md`, `_tools/platforms.json`): mặt nhân vật, sản phẩm, label nằm trong vùng an toàn (VD Reels: không đặt ở 14% trên / 35% dưới / 6% hai bên). Có bản phụ 4:5 → chủ thể gần giữa khung.
 
 LIGHTING AND STYLE
 Nguồn sáng · hướng (frame-left/right) · nhiệt màu/hex · chất liệu · mức chân thực.
@@ -39,7 +40,7 @@ Một ảnh đơn, đúng tỷ lệ. Không ghép bảng nhiều khung / contact
 PROMPT  (copy nguyên văn)
 ...
 
-QC (cổng 2, ngay sau gen): ☐ nhận diện ☐ sản phẩm/bao bì ☐ tay–tư thế–hướng nhìn ☐ texture–ánh sáng ☐ bố cục + khả năng diễn hoạt (chừa chỗ cho chuyển động sắp tới)
+QC (cổng 2a, ngay sau gen): ☐ **đúng nhân vật** — so với face-ref: dáng mặt, mắt, tóc, tông da, nét riêng, móng tay ☐ sản phẩm/bao bì ☐ tay–tư thế–hướng nhìn ☐ texture–ánh sáng ☐ bố cục + khả năng diễn hoạt (chừa chỗ cho chuyển động sắp tới)
 Lỗi hay gặp → prompt sửa (dùng cho 1 lần sửa duy nhất): ...
 Kết quả: worked / needs adjustment / failed → note user tự sửa tay
 ```

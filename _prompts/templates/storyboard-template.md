@@ -1,86 +1,73 @@
-# Storyboard — [TÊN CAMPAIGN]
+# Storyboard — template (có ảnh minh hoạ từng cảnh)
 
-> **Cách dùng:** Điền ở `/storyboard` sau khi script qua cổng B (trước khi mở `_skills/video/`/`_skills/motion-graphic/`). Xem `_skills/scene-routing/SKILL.md` để biết cách chia scene và gắn route tag.
-> **Naming:** lưu tại `scripts/storyboard.md` trong campaign này.
+> Claude viết `campaigns/[campaign]/scripts/storyboard.json` → chạy `python3 _tools/storyboard.py campaigns/[campaign]` → sinh:
+> - `scripts/storyboard.md` — bảng gọn + ảnh + prompt EN kèm dịch VI (các bước sau đọc file này)
+> - `scripts/storyboard.html` — **cùng khung với bảng clip** (`_tools/clip-board.py`): mỗi cảnh có mã · thời gian · mục đích · công cụ · render/dùng · ảnh · prompt ảnh + prompt video nháp (nút Copy + dịch VI) · lời thoại EN + VI · chữ trên màn hình · file lưu về. Copy prompt sang nền tảng nào cũng đủ thông tin. **Gửi vào chat bằng file card `display: render`**, không gửi link ảnh rời.
+> Sửa storyboard = sửa JSON rồi chạy lại tool. Không sửa tay `storyboard.md`.
 
----
+## Ảnh minh hoạ (bắt buộc, mỗi cảnh 1 ảnh)
 
-## Metadata
+- Gen ở cổng 1 bằng `gen-image.py --quality low`, đúng tỷ lệ, đúng bố cục / cỡ cảnh / hướng sáng dự kiến.
+- Lưu `outputs/review/storyboard/[code]_P-S01_v1.png` (P = preview). **Chỉ để duyệt ý** — không dùng làm khung video, không tính vào lượt 1 gen + 1 sửa của ảnh thật.
+- Cảnh dùng ảnh thật (packshot, logo) → trỏ thẳng tới ảnh thật, không gen.
+- Cảnh có thay đổi lớn (trước → sau) → thêm ảnh cuối cảnh vào `notes_vi` hoặc tách 2 cảnh.
 
-| Field | Thông tin |
-|-------|-----------|
-| **Campaign** | [Campaign code] |
-| **Duration tổng** | [15s / 20s / 30s] |
-| **Ratio** | [9:16 / 4:5 / 1:1] |
-| **Format** | [Testimonial / Product demo / Graphic-only / Mixed] |
+## Cấu trúc `storyboard.json`
 
----
+```json
+{
+  "campaign": "KOLOR-2026-10-TOPCOAT",
+  "duration": "10s",
+  "ratio": "9:16",
+  "format": "Voiceover",
+  "platform": {"ids": ["meta_reels", "tiktok"], "extra_ratios": ["4:5"], "template": "chuẩn nền tảng | refs/template/<file>"},
+  "look": "Look chung 1–2 câu (VI): nền, ánh sáng, tông màu, cỡ cảnh",
+  "character": {
+    "name": "dana", "source": "Import ảnh user / có sẵn / tạo mới",
+    "images": ["../../_characters/dana/reference-images/dana-face-ref-01.png", "...half-body-01.png", "...in-scene-01.png"],
+    "identity_lock_en": "Khối mô tả EN chi tiết — chép nguyên văn vào mọi prompt có nhân vật (character-intake.md mục 2)",
+    "identity_vi": "Dịch VI để user duyệt",
+    "voice_en": "Mô tả giọng 1 câu (UGC)"
+  },
+  "scenes": [
+    {
+      "id": "S01",
+      "time": "0.0–3.5s",
+      "purpose": "Hook / Proof / CTA…",
+      "route": "AI-VIDEO | MOTION-GRAPHIC",
+      "tool": "Công cụ + cài đặt theo prefs — VD Higgsfield · image-to-video · 9:16 / Remotion",
+      "render_s": 5,
+      "use_s": 3.5,
+      "image": "outputs/review/storyboard/KOLOR-2026-10-TOPCOAT_P-S01_v1.png",
+      "visual_vi": "Mô tả hình bằng tiếng Việt: ai làm gì, từ đầu cảnh tới cuối cảnh",
+      "line_en": "Lời thoại / VO nguyên văn (EN) — trống nếu cảnh không lời",
+      "line_vi": "Dịch lời thoại (VI)",
+      "onscreen": "Chữ trên màn hình (không em dash)",
+      "prompt_en": "Prompt ảnh khung đầu (EN)",
+      "prompt_vi": "Dịch prompt ảnh (VI)",
+      "video_prompt_en": "Prompt video NHÁP (EN) — đủ để copy sang nền tảng khác thử; chốt lại ở cổng 2 theo ảnh thật",
+      "video_prompt_vi": "Dịch prompt video (VI)",
+      "notes_vi": "Tuỳ chọn: camera 1 chuyển động, nối cảnh, rủi ro AI + cách đơn giản hoá",
+      "out": "outputs/videos/[code]_S01_[mô-tả]_v1.mp4"
+    }
+  ],
+  "images": [
+    {"Mã": "B-01", "Nội dung": "...", "Vai trò": "first frame", "Cảnh": "S01", "Nguồn": "tạo mới / ảnh thật / chỉnh sửa", "Ref": "..."}
+  ],
+  "assets": [
+    {"Asset": "S01", "Loại": "clip", "Nguồn": "gen mới", "Tên file": "[code]_S01_[mô-tả]_v1.mp4", "Ai làm": "User (Flow)", "Render (s)": "4", "Dùng (s)": "3.5"}
+  ]
+}
+```
 
-## Scene breakdown
+## Quy tắc
 
-| Mã | Bắt đầu–Kết thúc | Dài | Mục đích | Hình đầu cảnh | 1 hành động chính | Cỡ cảnh · góc | Camera (1 move / static) | Hình cuối cảnh | Nối sang cảnh sau | Chữ hiển thị | Lời đọc | Nhạc · SFX | Route | Rủi ro AI → đơn giản hoá |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| S01 | 0.0–_s | | | | | | | | | | | | AI-VIDEO / MOTION-GRAPHIC | |
+- `platform.ids` theo `_tools/platforms.json` → trang storyboard / bảng clip / bảng review vẽ **vùng an toàn** đè lên ảnh (dải đỏ = bị app che). Chữ trên màn hình, logo, CTA, mặt nhân vật, label sản phẩm phải nằm trong khung nét đứt. Có bản phụ 4:5 → chủ thể ở giữa khung để cắt được.
 
-Quy tắc:
-- Tổng thời lượng = **chính xác** duration brief; không có khoảng trống ngoài chủ ý.
-- Hành động quá phức tạp → tách cảnh. Không bắt buộc cảnh nào cũng có lời; lời ngắn, có chỗ nghỉ.
-- Giữ hướng chuyển động + hướng/nhiệt màu ánh sáng nhất quán giữa các cảnh liền kề.
-- Phân biệt **chuyển động thật** (AI-VIDEO) với **hiệu ứng minh hoạ** (MOTION-GRAPHIC / overlay).
+- Tổng thời lượng các cảnh = **đúng** duration brief.
+- Mỗi cảnh = 1 hành động chính, 1 chuyển động máy (hoặc đứng yên). Hành động phức tạp → tách cảnh.
+- Sản phẩm dùng theo bước (nail, skincare, makeup) → cảnh đi theo **đúng các bước thật** (thao tác → xử lý → thành phẩm). Muốn giảm rủi ro AI thì làm động tác đơn giản đi, không cắt mất hành động cốt lõi.
+- Route mập mờ → `_skills/scene-routing/references/scene-routing-rules.md`.
 - Mỗi cảnh = 1 clip render riêng. Gộp cảnh chỉ khi user yêu cầu.
-- Cột "Rủi ro AI": cảnh dễ lỗi (tay trong gương, chất lỏng, camera orbit quanh mặt, label khi rack focus…) + cách đơn giản hoá.
-
-> Route mập mờ → đọc `_skills/scene-routing/references/scene-routing-rules.md` trước khi quyết.
-
----
-
-## Assembly notes
-
-- Transition scene 1→2: [hard cut / crossfade / wipe]
-- Transition scene 2→3: [...]
-
-### Audio
-
-| Loại | Có dùng? | Nguồn file | Scene áp dụng |
-|------|----------|------------|----------------|
-| Nhạc nền | [Có/Không] | [người dùng tự gen/chọn theo prompt 4D → `outputs/audio/`. VD: 2026-06-LAUNCH_music_v1.mp3] | Toàn video / scene [X]–[Y] |
-| Voiceover | [Có/Không] | [ElevenLabs — Claude gen ở `/assets` 4D → `outputs/audio/`. VD: 2026-06-LAUNCH_vo-S01_v1.mp3] | Scene [X] |
-| SFX | [Có/Không] | [người dùng tự gen/chọn theo prompt 4D → `outputs/audio/`. VD: 2026-06-LAUNCH_sfx-01_pump-click_v1.mp3] | Scene [X] |
-| Audio gốc từ clip AI-VIDEO | [Có/Không] | [mặc định mute khi dựng — chỉ dùng khi audio-plan đánh dấu "tạo cùng clip"] | Scene [X] |
-
-> Nếu có Voiceover: duration của scene đó phải set theo độ dài file audio thật (xem `_skills/motion-graphic/references/audio-and-voice.md` — `calculateMetadata`), không hardcode số frame cố định.
-> Nếu có cả nhạc nền + voiceover: cần ducking (hạ nhạc khi có voice) — xem cùng file trên.
-
----
-
-## Hand-off checklist
-
-- [ ] Mọi scene AI-VIDEO có route + danh sách ảnh — thẻ prompt ảnh làm ở `/assets` 4A, thẻ prompt video (`_prompts/veo3/video-prompt-card.md`) làm ở `/assets` 4C
-- [ ] Mọi scene MOTION-GRAPHIC có mô tả nội dung — animation spec làm ở `/edit` (qua `_skills/motion-graphic/`)
-- [ ] Đã xác nhận thứ tự + transition trước khi build
-- [ ] Nếu có voiceover — VO chỉ từ ElevenLabs (`/assets` 4D), có sẵn trong `outputs/audio/` trước khi build scene đó
-
----
-
-## Danh sách ảnh
-
-### A. Ảnh tham chiếu — khoá nhận diện / sản phẩm / bối cảnh / tư thế / chất liệu / phong cách
-| Mã | Nội dung | Vai trò | Dùng cho cảnh | Dùng trực tiếp / chỉnh sửa / tạo mới | Ref cần + vai trò | Bắt buộc giữ | Prompt nháp |
-|---|---|---|---|---|---|---|---|
-
-### B. Ảnh dùng trực tiếp cho video — khung đầu / trung gian / cuối
-| Mã | Nội dung | Vai trò (first / mid / last frame) | Dùng cho cảnh | Dùng trực tiếp / chỉnh sửa / tạo mới | Ref cần + vai trò | Bắt buộc giữ | Prompt nháp |
-|---|---|---|---|---|---|---|---|
-
-Quy tắc: ảnh đã đạt → "Dùng trực tiếp", không tạo lại · contact sheet nhiều góc chỉ ở nhóm A, không làm khung video · khung trung gian/cuối chỉ khi thực sự giúp kiểm soát · không mặc định tool render hỗ trợ mọi ảnh/ref trong danh sách.
-
----
-
-## Danh sách asset (bắt buộc — dùng cho ⛔ C và chặng 4–5 (/assets, /check) trong `_workflows/production-steps.md`)
-
-| Asset | Loại (ảnh / clip / VO / nhạc / SFX / take UGC) | Nguồn (reuse / ảnh thật / gen mới) | Tên file | Ai gen | Render (s) — clip | Dùng (s) — clip |
-|---|---|---|---|---|---|---|
-| | | | | | | |
-
-Tên file theo naming convention `[campaign-code]_[asset-id]_[mô-tả-ngắn]_v[n].[ext]` — VD: `2026-06-LAUNCH_A-01_seed-face_v1.png` · `2026-06-LAUNCH_B-01_S01-mirror_v1.png` · `2026-06-LAUNCH_S01_mirror_v1.mp4` · `2026-06-LAUNCH_vo-S01_v1.mp3` · `2026-06-LAUNCH_music_v1.mp3` · `2026-06-LAUNCH_sfx-01_pump-click_v1.mp3` · `2026-06-LAUNCH_take-A_v1.mp4`. Clip Veo render 4/6/8s; "Dùng" = đoạn cắt theo VO thật ở `/edit`.
-
+- `images` + `assets`: tên file theo naming convention trong `CLAUDE.md`. Clip render 4/6/8s; "Dùng" = đoạn cắt theo VO thật ở cổng 3.
+- VO có thật → duration cảnh chốt theo file audio thật ở cổng 3 (`_skills/motion-graphic/references/audio-and-voice.md`).

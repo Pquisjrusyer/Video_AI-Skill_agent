@@ -46,6 +46,7 @@ TikTok-style word-highlight sub text that follows the dialogue, kinetic title ca
 
 1. Read this scene's animation spec in `storyboard.md` (content, text overlay, in/out transitions, duration)
 2. Check claims in the text overlay against the product's claim APPROVED trong `product-brief.md` — do not add unapproved claims
+   - Place every text overlay, logo, CTA and caption inside the platform **safe zone** (`brief.md` → Vùng an toàn; values in `_tools/platforms.json`, e.g. Reels: keep out of top 14%, bottom 35%, 6% each side — combined = largest margin per side across chosen platforms). If the brief has a secondary ratio (4:5), render it as a second composition with the subject centred.
 3. Write the Remotion component for the scene (following the patterns in `animation-patterns.md`)
 4. Render this scene separately for review before adding it to the assembly
 

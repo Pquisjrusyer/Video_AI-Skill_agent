@@ -1,6 +1,6 @@
 # Campaign Brief — [TÊN CAMPAIGN]
 
-> **Cách dùng:** Claude điền file này ở `/start` hoặc `/brief` (không copy tay). Field không có thông tin → "(giả định)" hoặc để trống — không bịa số liệu. 1 campaign = 1 script = 1 video.
+> **Cách dùng:** Claude điền file này ở Bước 0 cổng 1 (`_workflows/brief-intake.md`) — từ brief user import (bám theo, không đổi ý) hoặc brief Claude gợi ý đã được user chọn. Field không có thông tin → "(giả định)" hoặc để trống — không bịa số liệu. 1 campaign = 1 script = 1 video.
 
 ---
 
@@ -8,6 +8,7 @@
 
 | Field | Thông tin |
 |-------|-----------|
+| **Nguồn brief** | [User import — `refs/brief-goc.*` / Claude gợi ý — Brief A, user chọn ngày …] |
 | **Campaign name** | [VD: June Launch — Serum A — Cold Traffic] |
 | **Brand** | [Kreizi Beauty / Kolor Acrylic] → đọc context ở `_brand/[brand-slug]/` |
 | **Campaign code** | [VD: KREIZI-2026-06-LAUNCH] ← có mã brand ở đầu, dùng cho naming files |
@@ -15,7 +16,10 @@
 | **Ngày kết thúc (dự kiến)** | [YYYY-MM-DD] |
 | **Format** | [UGC / Voiceover / Product demo / Motion graphic / Static+Video combo] |
 | **Duration** | [15s / 20s / 30s] |
-| **Ratio** | [9:16 / 4:5] |
+| **Nền tảng** | [Meta Reels / Meta Stories / Meta Feed / TikTok / YouTube Shorts — chọn nhiều] |
+| **Ratio** | [Bản chính 9:16 · bản phụ 4:5 nếu có Feed] |
+| **Vùng an toàn** | [Gộp theo nền tảng — `_tools/platforms.json`, VD Reels: trên 14% · dưới 35% · 2 bên 6%] |
+| **Template** | [Chuẩn nền tảng / template riêng ở `refs/template/` / không] |
 | **Voice (VO)** | [voice_id + settings ghi ở `prompts-used/audio-plan.md` — 4D] |
 
 ---

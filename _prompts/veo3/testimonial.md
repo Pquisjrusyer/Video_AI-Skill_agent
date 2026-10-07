@@ -1,6 +1,6 @@
 # Veo 3 Prompt Library — Testimonial Ad
 
-> ⛔ **Không dùng cho người nói — testimonial → `_workflows/ugc-workflow.md` (TopView). Chỉ tham khảo ý tưởng hình.**
+> ⛔ **Không dùng file này cho take người nói** — testimonial → `_workflows/ugc-workflow.md` (Bước 4A Google Flow / 4B TopView). Chỉ tham khảo ý tưởng hình.
 > Các dòng thoại / "native dialogue audio" / thời lượng 12–30s bên dưới là di sản cũ, **không áp dụng**. Lời thoại tham khảo cho script UGC (`/script`); bối cảnh/ánh sáng/khung hình tham khảo cho ảnh avatar (thẻ `_prompts/nano-banana/image-prompt-card.md`). Clip Veo không người nói → thẻ `_prompts/veo3/video-prompt-card.md`.
 
 > **Khi dùng:** Muốn tạo video người (nhân vật AI) nói trực tiếp vào camera về sản phẩm.  
@@ -27,7 +27,7 @@ She says:
 
 [SECONDARY ACTION — optional: e.g., She picks up the product bottle and shows it to camera briefly, then sets it down.]
 
-[KHÔNG ÁP DỤNG — thoại/giọng do TopView tạo trong take UGC, không dùng Veo dialogue]
+[KHÔNG ÁP DỤNG Ở ĐÂY — thoại UGC viết theo thẻ take trong `ugc-workflow.md` Bước 4A (Flow) / 4B (TopView)]
 
 Format: [9:16 / 4:5 / 1:1]
 Duration: [không áp dụng]
@@ -55,7 +55,7 @@ Like I'm not explaining it to people anymore, they're just... noticing."
 She holds up a [PRODUCT DESCRIPTION] briefly while saying the last line, 
 then smiles naturally and looks slightly off-camera.
 
-[KHÔNG ÁP DỤNG — thoại/giọng do TopView tạo trong take UGC, không dùng Veo dialogue]
+[KHÔNG ÁP DỤNG Ở ĐÂY — thoại UGC viết theo thẻ take trong `ugc-workflow.md` Bước 4A (Flow) / 4B (TopView)]
 
 Format: 9:16 | Duration: [không áp dụng]
 ```
@@ -87,7 +87,7 @@ She picks up [PRODUCT] from the side table, shows it briefly.
 "There's a money-back guarantee so I figured — why not. 
 Just glad I did."
 
-[KHÔNG ÁP DỤNG — thoại/giọng do TopView tạo trong take UGC, không dùng Veo dialogue]
+[KHÔNG ÁP DỤNG Ở ĐÂY — thoại UGC viết theo thẻ take trong `ugc-workflow.md` Bước 4A (Flow) / 4B (TopView)]
 
 Format: 9:16 | Duration: [không áp dụng]
 ```
@@ -112,7 +112,7 @@ Now people are asking me what I changed."
 "It's just this."
 [Holds up product — 1 second]
 
-[KHÔNG ÁP DỤNG — thoại/giọng do TopView tạo trong take UGC, không dùng Veo dialogue]
+[KHÔNG ÁP DỤNG Ở ĐÂY — thoại UGC viết theo thẻ take trong `ugc-workflow.md` Bước 4A (Flow) / 4B (TopView)]
 Format: 9:16 | Duration: [không áp dụng]
 ```
 
@@ -122,8 +122,8 @@ Format: 9:16 | Duration: [không áp dụng]
 
 ## Tips khi dùng Testimonial prompts
 
-- **Dialogue length (khi viết script UGC):** TopView ≈ 3.5 từ/giây, mỗi take < 40 từ — xem `_workflows/ugc-workflow.md`
-- **Nếu lip sync lệch (take TopView):** tách take ngắn hơn
+- **Dialogue length (khi viết script UGC):** Flow ≤ 20 từ/take (8s) · TopView ≈ 3.5 từ/giây, mỗi take < 40 từ — xem `_workflows/ugc-workflow.md` Bước 2
+- **Nếu lip sync lệch:** tách take ngắn hơn
 - **Consistent character:** Luôn dùng cùng character description block cho cùng 1 nhân vật xuyên campaign
 - **Sau khi generate:** Kiểm tra ở 1.5x speed — lip sync phải khớp ở mọi tốc độ
 - **Lưu prompt đã dùng** vào `campaigns/[tên]/prompts-used/` và ghi note kết quả

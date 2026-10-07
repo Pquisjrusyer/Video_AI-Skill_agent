@@ -1,23 +1,52 @@
-# Handoff Pack — bàn giao render & dựng (lượt 4E)
+# Handoff Pack — bàn giao render & dựng (cổng 2)
 
-> Dùng ở `/assets` lượt 4E, sau khi 4A–4D đã ✅. Lưu `prompts-used/handoff.md`. **Chỉ tổng hợp nội dung ĐÃ DUYỆT** — không viết mới, không đổi chuyển động/lời. Thứ gì chưa duyệt → ghi ⚠️ và dừng hỏi.
-> Không render tại đây. Mục tiêu: người render / người dựng copy được ngay, không phải mở file khác.
+> 2 phần:
+> - **Bảng clip** (mục 0) — làm **ngay khi ảnh thật pass, TRƯỚC khi tạo clip**: đây là chỗ user nhận prompt video để render (hoặc theo dõi khi Claude gen qua TopView/Higgsfield). Sau khi có clip → chạy lại để duyệt.
+> - **`prompts-used/handoff.md`** (mục B–D) — âm thanh, hướng dẫn dựng, tiêu chí duyệt. Không chép prompt video vào đây.
+> **Chỉ tổng hợp nội dung ĐÃ DUYỆT.** Thứ gì chưa duyệt → ghi ⚠️ và dừng hỏi.
 
-## A. Bảng render (mỗi cảnh 1 khối)
 
+## 0. Bảng clip — bàn giao + duyệt (bắt buộc khi có clip video)
+
+Claude ghi `prompts-used/clips.json` → chạy `python3 _tools/clip-board.py campaigns/[campaign]` → `outputs/review/clip-board.html` → **gửi file card hiển thị trực tiếp** cho user.
+- **Trước khi render:** bảng bàn giao — mỗi cảnh: mã · thời gian · mục đích · công cụ + cài đặt · render/dùng (s) · ảnh khung đầu · prompt EN (nút Copy) + dịch VI · lời thoại EN + VI · file lưu về · ô "Xong".
+- **Sau khi có clip** (Claude gen xong hoặc user thả vào `outputs/videos/`): chạy lại đúng lệnh → mỗi cảnh thêm 3 khung hình cắt từ clip thật, **lời nghe được trong clip** (faster-whisper) so với lời script (chữ thiếu gạch đỏ, chữ thừa tô vàng, % khớp) và kiểm tra: 9:16 · đủ độ dài · lời không vượt đoạn dùng · tốc độ nói ≤ 3.2 từ/giây. Báo user lỗi theo từng cảnh, chỉ làm lại cảnh lỗi.
+
+```json
+{
+  "campaign": "KREIZI-2026-10-HONEST",
+  "title": "Flow có lời",
+  "wps": 2.4,
+  "ratio": "9:16",
+  "duration": "20s",
+  "platform": {"ids": ["meta_reels", "tiktok"], "extra_ratios": ["4:5"]},
+  "character": {"name": "dana", "images": ["../../_characters/dana/reference-images/dana-face-ref-01.png"], "identity_lock_en": "…", "identity_vi": "…"},
+  "howto": "1 dòng thao tác cho người render (chỉ cần khi user tự render, VD Flow: Veo 3.1 → Frames to Video → upload ảnh → 9:16 → dán prompt → tải 1080p)",
+  "clips": [
+    {
+      "id": "S1", "time": "0.0–7.5s", "purpose": "Hook",
+      "tool": "Flow · Veo 3.1 · Frames to Video · 9:16",
+      "render_s": 8, "use_s": 7.5,
+      "first_frame": "outputs/images/[code]_A-02_take-A-talk_v1.png",
+      "prompt_en": "Prompt nguyên văn (EN)",
+      "prompt_vi": "Dịch prompt (VI)",
+      "line_en": "Lời thoại / VO của cảnh này — để trống nếu cảnh không có lời",
+      "line_vi": "Dịch lời thoại (VI)",
+      "audio": "in-clip | vo:outputs/audio/[code]_vo-S01_v1.mp3 | none",
+      "notes_vi": "Kiểm khung cuối, âm thêm sau khi dựng (vo/sfx/nhạc)…",
+      "out": "outputs/videos/[code]_S1_hook_v1.mp4"
+    }
+  ]
+}
 ```
-### [SCENE ID] · [tên file clip — `[campaign-code]_[scene-id]_[mô-tả-ngắn]_v[n].mp4`, VD 2026-06-LAUNCH_S01_mirror_v1.mp4 → outputs/videos/]
-Tool / model:            Veo 3.1 · image-to-video · 9:16 · 1080p
-Ảnh đầu vào + vai trò:   First frame = [file] · (last frame / ref nếu tool hỗ trợ)
-Render:                  [4/6/8]s        Dùng khi dựng: [in–out, VD 0.4–3.4s = 3.0s]
-Âm tạo cùng clip:        [VD: không — mute khi dựng]
-Âm thêm sau:             [vo-S01 · sfx-02 · music — file trong outputs/audio/, VD 2026-06-LAUNCH_vo-S01_v1.mp3]
-PROMPT (đã gộp AUDIO CUES đã duyệt — copy nguyên văn):
-...
-Kiểm khung đầu:          ☐ khớp ảnh đầu vào (mặt, sản phẩm, ánh sáng)
-Kiểm khung cuối:         ☐ [trạng thái cuối yêu cầu] ☐ giữ yên đủ [x]s để nối
-```
-Cảnh MOTION-GRAPHIC: ghi "Dựng bằng Remotion ở /edit — không render ở tool ngoài" + asset nguồn.
+- `audio`: `in-clip` = lời nằm trong clip (Flow có lời, TopView, Higgsfield) · `vo:…` = lời là file VO riêng → kiểm VO đó có vừa đoạn dùng của cảnh không · `none` = cảnh không lời.
+- `wps`: tốc độ đọc để ước tính độ dài lời (VO ElevenLabs/OpenAI ≈ 2.4 · UGC Flow có lời ≈ 2.7 — đã test 20 từ / 7.4s). Bảng hiện "N từ ≈ Xs · cảnh dùng Ys ✅/⚠️" ngay cả khi chưa có âm thanh.
+- `render_s` và `use_s` chỉ ghi ở đây — mọi chỗ khác dẫn chiếu, không gõ lại (tránh lệch kiểu cột ghi 6s nhưng prompt ghi 8s).
+
+## A. Prompt render — KHÔNG ghi ở đây
+
+Prompt video, ảnh khung đầu, cài đặt công cụ, render/dùng (s), âm tạo cùng clip, kiểm khung cuối → **chỉ nằm trong bảng clip** (mục 0, `clips.json` → `clip-board.html`). `handoff.md` không chép lại prompt — 1 nguồn duy nhất, tránh lệch số giữa 2 nơi.
+Cảnh MOTION-GRAPHIC: vẫn có 1 dòng trong `clips.json` với `tool: "Remotion"`, `prompt_en` để trống, `notes_vi` ghi asset nguồn.
 
 ## B. Bộ âm thanh
 - **VO:** prompt chỉ dẫn giọng + bảng lời đọc sạch (file · text · ước tính s) — copy từ `audio-plan.md`. Ghi voice_id/settings nếu Claude đã gen.

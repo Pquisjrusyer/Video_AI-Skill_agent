@@ -1,8 +1,8 @@
 # Veo reference (Google)
 
-> **PROJECT DEFAULT** — users render Veo 3.1 image-to-video from the 4C card (`_prompts/veo3/video-prompt-card.md`), 4/6/8s. VO, music and SFX are added at `/edit`, so every prompt ends with the audio line:
+> **PROJECT DEFAULT** — users render Veo 3.1 image-to-video in **Google Flow** (labs.google/flow) from the 4C card (`_prompts/veo3/video-prompt-card.md`), 4/6/8s. VO, music and SFX are added at `/edit`, so every prompt ends with the audio line:
 > `No dialogue, no music, no sound effects; quiet natural ambience only.`
-> Clip audio is muted in edit unless `audio-plan.md` marks the sound "tạo cùng clip". A speaking person (testimonial) → UGC via TopView, never Veo dialogue.
+> Clip audio is muted in edit unless `audio-plan.md` marks the sound "tạo cùng clip". A speaking person (testimonial) → UGC take card in `_workflows/ugc-workflow.md` Bước 4A (Google Flow, Veo dialogue + lip sync, ≤ 20 words per 8s take) — the only place Veo dialogue is used.
 
 ## Contents
 
@@ -52,7 +52,7 @@ Sweet spot. 50-200 words.
 
 ## 4. Dialogue syntax (critical)
 
-> Project: only when `audio-plan.md` marks the sound "tạo cùng clip" — otherwise use the PROJECT DEFAULT audio line. Never for testimonials.
+> Project: UGC takes (`ugc-workflow.md` Bước 4A) and sounds marked "tạo cùng clip" in `audio-plan.md` — otherwise use the PROJECT DEFAULT audio line. UGC: describe the voice identically in every take (Veo cannot lock a voice across clips).
 
 Veo is the only model that renders synced lip movement and voice. The syntax matters.
 

@@ -39,7 +39,8 @@ def rng(t):
     return (float(nums[0]), float(nums[1])) if len(nums) >= 2 else None
 
 m = probe(video); dur = m["dur"]
-words = transcribe(video)
+words = transcribe(video, data.get("lang") or "en")
+max_wps = data.get("max_wps") or MAX_WPS   # tiếng Việt đếm theo tiếng (âm tiết) → nhanh hơn tiếng Anh
 rows, summary, used = [], [], set()
 for s in scenes:
     r = rng(s.get("time"))
@@ -60,7 +61,7 @@ for s in scenes:
             g = max(gaps) if gaps else 0
             checks.append((g <= 1.5, f"Khoảng lặng dài nhất {g:.1f}s" + ("" if g <= 1.5 else " — hơi hụt nhịp")))
             wps = len(norm(heard)) / max(ws[-1].end - ws[0].start, 0.1)
-            checks.append((wps <= MAX_WPS, f"Tốc độ {wps:.1f} từ/giây" + ("" if wps <= MAX_WPS else " — nhanh, dễ rít")))
+            checks.append((wps <= max_wps, f"Tốc độ {wps:.1f} từ/giây" + ("" if wps <= max_wps else " — nhanh, dễ rít")))
         else:
             checks.append((False, "Không nghe thấy lời trong cảnh này"))
     elif heard:

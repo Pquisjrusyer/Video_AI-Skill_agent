@@ -82,7 +82,7 @@ def _end(t):
 target = _board._secs(sb.get("duration"))
 wps = sb.get("wps") or _board.WPS
 scene_end = max([x for x in (_end(s.get("time")) for s in scenes) if x is not None], default=None)
-words = sum(len(__import__("re").findall(r"[A-Za-z0-9']+", line_en(s) or "")) for s in scenes)
+words = sum(len(__import__("re").findall(r"[\w']+", line_en(s) or "")) for s in scenes)
 problems = []
 if target is None:
     problems.append("Chưa có thời lượng video trong storyboard.json → HỎI USER bao nhiêu giây trước khi làm tiếp")

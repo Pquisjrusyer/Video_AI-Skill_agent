@@ -20,12 +20,14 @@ def frame_at(path, t):
     png = subprocess.run(["ffmpeg", "-v", "error", "-ss", f"{t:.2f}", "-i", path, "-frames:v", "1",
                           "-f", "image2pipe", "-vcodec", "png", "-"], capture_output=True).stdout
     return Image.open(io.BytesIO(png)) if png else None
-def transcribe(path):
+def transcribe(path, language="en"):
+    """language: mã ISO ("en", "vi"…) — lấy từ trường "lang" của storyboard.json / clips.json. Ngoài tiếng Anh dùng model "small" (base nghe sai nhiều)."""
     global _whisper
-    if _whisper is None:
+    size = "base" if language == "en" else "small"
+    if _whisper is None or _whisper[0] != size:
         from faster_whisper import WhisperModel   # máy không GPU → CPU
-        _whisper = WhisperModel("base", device="cpu", compute_type="int8")
-    segs, _ = _whisper.transcribe(path, word_timestamps=True, language="en")
+        _whisper = (size, WhisperModel(size, device="cpu", compute_type="int8"))
+    segs, _ = _whisper[1].transcribe(path, word_timestamps=True, language=language)
     return [w for s in segs for w in (s.words or [])]
 # Chuẩn hoá để "won't" = "will not", "I'm" = "I am", "fifty-two" = "52" không bị tính là sai lời.
 CONTR = {"won't": "will not", "can't": "can not", "cannot": "can not", "shan't": "shall not", "let's": "let us",
@@ -35,7 +37,7 @@ SUFFIX = [("n't", " not"), ("'m", " am"), ("'ll", " will"), ("'re", " are"), ("'
 ONES = {w: i for i, w in enumerate("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split())}
 TENS = {w: 10 * i for i, w in enumerate("_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()) if w != "_"}
 def norm(s):
-    toks = re.sub(r"[^a-z0-9' ]", " ", s.lower().replace("’", "'").replace("-", " ")).split()
+    toks = re.sub(r"[^\w' ]", " ", s.lower().replace("’", "'").replace("-", " ")).split()
     out = []
     for t in toks:
         t = CONTR.get(t, t)

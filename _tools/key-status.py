@@ -60,12 +60,15 @@ def chk_elevenlabs(env):
 def chk_fal(env):
     c, _ = get("https://api.fal.ai/v1/models?limit=1", {"Authorization": f"Key {env['FAL_KEY']}"})
     return (c == 200, "OK (credit chỉ biết khi gen)" if c == 200 else f"LỖI {c} — key sai" if c in (401, 403) else f"không kiểm được ({c})")
+def chk_freesound(env):
+    c, _ = get("https://freesound.org/apiv2/search/?query=music&page_size=1", {"Authorization": f"Token {env['FREESOUND_API_KEY']}"})
+    return (c == 200, "OK" if c == 200 else f"LỖI {c} — key sai (cần cột Client secret/Api key)" if c in (401, 403) else f"không kiểm được ({c})")
 def chk_replicate(env):
     c, _ = get("https://api.replicate.com/v1/account", {"Authorization": f"Bearer {env['REPLICATE_API_TOKEN']}"})
     return (c == 200, "OK" if c == 200 else f"LỖI {c}")
 
 CHECKS = {"OPENAI_API_KEY": chk_openai, "GEMINI_API_KEY": chk_gemini, "CLOUDFLARE_API_TOKEN": chk_cloudflare,
-          "HF_TOKEN": chk_hf, "REPLICATE_API_TOKEN": chk_replicate, "ELEVENLABS_API_KEY": chk_elevenlabs, "FAL_KEY": chk_fal}
+          "HF_TOKEN": chk_hf, "REPLICATE_API_TOKEN": chk_replicate, "ELEVENLABS_API_KEY": chk_elevenlabs, "FAL_KEY": chk_fal, "FREESOUND_API_KEY": chk_freesound}
 
 
 def task_keys(task, pid):
@@ -82,7 +85,7 @@ def needed(prefs):
         need += IMAGE_KEYS.get(prefs.get("IMAGE_PROVIDER", "openai"), [])
     if prefs.get("VO_TOOL") == "openai": need.append("OPENAI_API_KEY")
     # Gen qua API (giọng / nhạc / video): key của nhà cung cấp đang chọn
-    for tool, task, pref, dflt in (("VO_TOOL", "voice", "VO_PROVIDER", "elevenlabs"), ("MUSIC_TOOL", "music", "MUSIC_PROVIDER", "elevenlabs_music"),
+    for tool, task, pref, dflt in (("VO_TOOL", "voice", "VO_PROVIDER", "elevenlabs"), ("MUSIC_TOOL", "music", "MUSIC_PROVIDER", "freesound_cc0"),
                                    ("VIDEO_TOOL", "video", "VIDEO_PROVIDER", "fal_video")):
         if prefs.get(tool) == "api": need += task_keys(task, prefs.get(pref, dflt))
     for svc, keys in (("topview", ["TOPVIEW_API_KEY", "TOPVIEW_UID"]), ("higgsfield", ["HIGGSFIELD_API_KEY", "HIGGSFIELD_API_SECRET"])):

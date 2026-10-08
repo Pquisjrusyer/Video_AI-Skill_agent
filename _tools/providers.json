@@ -268,6 +268,26 @@
   ],
   "music": [
     {
+      "id": "freesound_cc0",
+      "label": "Freesound CC0 — MIỄN PHÍ, nhạc có sẵn bản quyền CC0 (dùng ads được, không cần ghi nguồn), Claude tự tìm + cắt đúng độ dài",
+      "free": true,
+      "refs": false,
+      "keys": [
+        {
+          "env": "FREESOUND_API_KEY",
+          "label": "API key (Client secret)",
+          "hidden": true
+        }
+      ],
+      "url": "https://freesound.org/apiv2/apply",
+      "guide": [
+        "Vào freesound.org → Join (đăng ký miễn phí) → xác nhận email.",
+        "Mở freesound.org/apiv2/apply → điền tên (VD AI Video) + mô tả ngắn → Request new access credentials.",
+        "Trong bảng hiện ra, copy cột \"Client secret/Api key\" (KHÔNG phải Client id).",
+        "Lưu ý: đây là nhạc người khác đăng sẵn (không phải AI gen). Claude chỉ lấy bài giấy phép CC0 nên dùng chạy ads được."
+      ]
+    },
+    {
       "id": "elevenlabs_music",
       "label": "ElevenLabs Music — nhạc nền không lời đẹp nhất · cần gói trả phí",
       "free": false,
@@ -288,8 +308,27 @@
       ]
     },
     {
+      "id": "gemini_lyria",
+      "label": "Google Lyria 3 (Gemini API) — AI gen nhạc theo mô tả, trả phí rẻ, dùng chung key Gemini",
+      "free": false,
+      "refs": false,
+      "keys": [
+        {
+          "env": "GEMINI_API_KEY",
+          "label": "API key (AIza...)",
+          "hidden": true
+        }
+      ],
+      "url": "https://aistudio.google.com/apikey",
+      "guide": [
+        "Vào aistudio.google.com/apikey → đăng nhập Google.",
+        "Create API key → chọn hoặc tạo 1 Google Cloud project → copy key (bắt đầu AIza).",
+        "Nhạc Lyria cần bật thanh toán cho project (Google AI Studio → Billing)."
+      ]
+    },
+    {
       "id": "replicate_music",
-      "label": "Replicate MusicGen — trả theo lượt, rẻ (có credit dùng thử)",
+      "label": "Replicate MusicGen — trả theo lượt · model giấy phép phi thương mại (CC-BY-NC), KHÔNG nên dùng chạy ads",
       "free": false,
       "refs": false,
       "keys": [

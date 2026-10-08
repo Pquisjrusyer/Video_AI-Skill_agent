@@ -30,7 +30,12 @@ Dùng AskUserQuestion. Lượt 1 (4 câu):
 
 Lượt 2:
 - (khi `IMAGE_TOOL=claude`) Nhà cung cấp ảnh mặc định: OpenAI GPT Image — trả phí, chất lượng cao nhất (Recommended) → `IMAGE_PROVIDER=openai` · Cloudflare — **miễn phí** ~200 ảnh/ngày, có ảnh tham chiếu → `cloudflare` · Gemini / fal.ai / Replicate (trả phí) → `gemini` / `fal` / `replicate`. Pollinations, Hugging Face (miễn phí, không ảnh tham chiếu) chỉ hợp ảnh minh hoạ. Lỗi lúc gen → popup tự hỏi đổi nhà.
-- Nhạc nền: ElevenLabs — connector, không có thì dùng API key → `MUSIC_TOOL=elevenlabs` · Qua API nhà khác (Replicate MusicGen, trả theo lượt rẻ) → `MUSIC_TOOL=api` + `MUSIC_PROVIDER=replicate_music` · Tôi tự chọn → `MUSIC_TOOL=self`. Nói thật 1 câu: nhạc **không có nhà miễn phí** thật sự.
+- Nhạc nền (câu hỏi kèm mô tả, đánh dấu miễn phí):
+  - **Miễn phí — Freesound CC0 (Recommended khi hết tiền)**: Claude tự tìm nhạc có sẵn giấy phép CC0 (dùng ads được, không cần ghi nguồn) + cắt đúng độ dài → `MUSIC_TOOL=api` + `MUSIC_PROVIDER=freesound_cc0`. Nói rõ: nhạc người khác đăng sẵn, không phải AI gen theo mô tả.
+  - ElevenLabs Music — connector, không có thì dùng API key, cần gói trả phí → `MUSIC_TOOL=elevenlabs`
+  - Google Lyria 3 — AI gen theo mô tả, trả phí, dùng chung key Gemini → `MUSIC_TOOL=api` + `MUSIC_PROVIDER=gemini_lyria`
+  - Tôi tự chọn → `MUSIC_TOOL=self` (gợi ý nguồn free dùng ads được: YouTube Audio Library, Pixabay Music)
+  - Không gợi ý Replicate MusicGen cho ads (model giấy phép phi thương mại).
 - (khi `VO_TOOL=api`) Nhà giọng đọc mặc định — câu hỏi kèm mô tả, đánh dấu miễn phí:
   - **Gemini TTS — miễn phí, giọng tự nhiên, chỉnh cảm xúc được (Recommended)** → `VO_PROVIDER=gemini_tts`
   - Cloudflare Aura-2 / MeloTTS — miễn phí, chung hạn mức 10.000 neuron/ngày với ảnh Cloudflare → `cloudflare_aura` / `cloudflare_melo`
@@ -168,9 +173,10 @@ Nói user 1 câu theo nhà đã chọn (chi tiết đã có trong popup):
 - Gemini: "Lấy key ở **aistudio.google.com/apikey** → Create API key (bắt đầu `AIza`)."
 - ElevenLabs: "Lấy ở **elevenlabs.io → avatar → API Keys → Create** (bắt đầu `sk_`), bật quyền Text to Speech (+ Music)."
 - fal.ai: "Lấy ở **fal.ai/dashboard/keys → Add key**. Tài khoản mới thường có credit dùng thử."
+- Freesound: "Đăng ký **freesound.org** → mở **freesound.org/apiv2/apply** → Request new access credentials → copy cột **Client secret/Api key**."
 - Replicate: "Lấy ở **replicate.com/account/api-tokens** (bắt đầu `r8_`), thêm thẻ ở Billing."
 - Cloudflare: popup có 2 ô (API Token + Account ID).
-Kiểm: `python3 _tools/key-status.py` (kiểm được ElevenLabs, Gemini, Cloudflare, fal, Replicate, OpenAI).
+Kiểm: `python3 _tools/key-status.py` (kiểm được ElevenLabs, Gemini, Cloudflare, fal, Replicate, Freesound, OpenAI).
 
 Key chưa kiểm được bằng lệnh → kiểm ở lần gen đầu tiên; lỗi 401/403 → nhập lại qua popup.
 

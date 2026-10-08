@@ -133,13 +133,15 @@ Gen lại → tăng số: `_v2`, `_v3`.
 | Giọng đọc | **Cloudflare Aura-2 / MeloTTS** | **Miễn phí** — chung 10.000 neuron/ngày với ảnh Cloudflare, hết thì mai dùng tiếp | dash.cloudflare.com → API Tokens (mẫu Workers AI) + Account ID |
 | Giọng đọc | ElevenLabs API | Free 10.000 ký tự/tháng **nhưng không được dùng chạy ads** · gói trả phí từ Starter | elevenlabs.io → avatar → API Keys |
 | Giọng đọc | OpenAI TTS | Trả phí, rẻ (dùng chung key OpenAI) | platform.openai.com/api-keys |
+| Nhạc nền | **Freesound CC0** | **Miễn phí** — nhạc có sẵn giấy phép CC0 (dùng ads được, không cần ghi nguồn). Claude tự tìm theo mood, cắt đúng độ dài. Không phải AI gen → nghe thử trước | freesound.org → đăng ký → freesound.org/apiv2/apply → copy cột "Client secret/Api key" |
 | Nhạc nền | ElevenLabs Music | Cần gói trả phí | như trên, bật quyền Music |
-| Nhạc nền | Replicate MusicGen | Trả theo lượt, rẻ | replicate.com/account/api-tokens |
+| Nhạc nền | Google Lyria 3 | Trả phí — AI gen theo mô tả | dùng chung key Gemini, bật thanh toán |
+| Nhạc nền | Tự chọn | Miễn phí — YouTube Audio Library, Pixabay Music (dùng ads được) | bạn tải về, thả vào `outputs/audio/` |
 | Video | **fal.ai** (Kling v3) | Có **credit dùng thử** khi đăng ký, hết thì nạp | fal.ai/dashboard/keys |
 | Video | Replicate (Kling / Wan / Seedance) | Trả theo lượt, có credit dùng thử | replicate.com/account/api-tokens |
 | Video | Google Veo 3.1 (Gemini API) | Trả phí — thật nhất, có tiếng | aistudio.google.com/apikey + bật thanh toán |
 
-**Nói thật:** giọng đọc có nhà miễn phí thật. **Video và nhạc thì không có nhà miễn phí lâu dài** — chỉ có credit dùng thử.
+**Nói thật:** giọng đọc có nhà miễn phí thật. Nhạc miễn phí = thư viện nhạc CC0 có sẵn (Freesound), còn nhạc AI gen theo mô tả thì phải trả phí. **Video không có nhà miễn phí lâu dài** — chỉ có credit dùng thử.
 
 **Khi đang gen mà hết credit / key lỗi:** Claude in 1 câu thần chú 🔮 (VD *"Credit OpenAI cháy rồi, gọi hồn đứa khác thôi 👻"*) và popup tự mở để bạn chọn nhà khác + dán key → Claude gen lại đúng file đó. Bấm Huỷ → Claude xuất thẻ để bạn tự gen.
 

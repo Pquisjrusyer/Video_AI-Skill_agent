@@ -9,7 +9,7 @@ Thêm câu mới: thêm vào SPECIAL (riêng từng nhà) hoặc GENERIC ({P} = 
 import random, sys
 
 NAMES = {"openai": "OpenAI", "gemini": "Gemini", "fal": "fal.ai", "replicate": "Replicate", "cloudflare": "Cloudflare",
-         "pollinations": "Pollinations", "huggingface": "Hugging Face", "elevenlabs": "ElevenLabs",
+         "pollinations": "Pollinations", "freesound": "Freesound", "huggingface": "Hugging Face", "elevenlabs": "ElevenLabs",
          "topview": "TopView", "higgsfield": "Higgsfield"}
 
 SPECIAL = {

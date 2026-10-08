@@ -26,7 +26,7 @@
 | Video (b-roll, demo) — `VIDEO_TOOL` | `higgsfield` / `topview`: **Claude gen** qua MCP hoặc API (theo `HIGGSFIELD_CONN` / `TOPVIEW_CONN`), từ thẻ video + ảnh khung đầu đã pass. **Mỗi clip tối đa 1 gen + 1 sửa**, báo danh sách clip trước khi gen. Kết nối chưa sẵn sàng / chưa có tool gọi API → xuất thẻ cho user tự render · `api`: **Claude gen** bằng `_tools/gen-video.py` (nhà `VIDEO_PROVIDER`: fal_video / replicate_video / gemini_veo — chỉ credit dùng thử, không free lâu dài), cùng quy tắc 1 gen + 1 sửa · `flow`: **chỉ để test** — user tự render trên Google Flow (Veo 3.1) theo thẻ · `other`: thẻ dạng chung. |
 | UGC (người nói) — `UGC_TOOL` | `topview` / `higgsfield`: **Claude gen** take qua MCP hoặc API (ảnh take + lời thoại + giọng — `ugc-workflow.md` Bước 4B), cùng quy tắc 1 gen + 1 sửa · `flow`: **chỉ để test** — Veo 3.1 tạo thoại + khẩu hình trong clip, mỗi take ≤ 8s, user tự render (Bước 4A). |
 | VO — `VO_TOOL` | `elevenlabs`: Claude gen qua **connector ElevenLabs (MCP)**, tự tải file (`media[].url` qua `creative_get_flow_run_status` → `curl` về `outputs/audio/`, link hết hạn 2 giờ) **Không có connector → dùng API key ElevenLabs** qua `_tools/gen-voice.py --provider elevenlabs` (popup key nếu chưa có) · `api`: `gen-voice.py` theo `VO_PROVIDER` (**miễn phí**: gemini_tts, cloudflare_aura / cloudflare_melo · elevenlabs free không dùng thương mại · openai_tts) · `openai`: = `api` + openai_tts · `self`: thẻ cho user tự gen. Lựa chọn không dùng được → thử lựa chọn kế, rồi tới thẻ. Giọng mặc định theo brand: mục "Brand voice" trong `brand-brief.md` (nếu có — chưa có thì giữ giọng campaign trước của brand). |
-| Nhạc nền · SFX — `MUSIC_TOOL` | `elevenlabs`: Claude gen nhạc qua connector (`creative_generate_in_flow`, node `music`, `eleven_music_v2_5`) theo `audio-plan.md`, chọn bản (không vocal — kiểm faster-whisper, beat theo RMS), tự tải về; **không có connector → `_tools/gen-music.py --provider elevenlabs_music`** (API key) · `api`: `gen-music.py` theo `MUSIC_PROVIDER` (replicate_music) · `self`: user tự chọn theo prompt. SFX: user tự chọn. Không tự tổng hợp nhạc bằng code cho bản thật. |
+| Nhạc nền · SFX — `MUSIC_TOOL` | `elevenlabs`: Claude gen nhạc qua connector (`creative_generate_in_flow`, node `music`, `eleven_music_v2_5`) theo `audio-plan.md`, chọn bản (không vocal — kiểm faster-whisper, beat theo RMS), tự tải về; **không có connector → `_tools/gen-music.py --provider elevenlabs_music`** (API key) · `api`: `gen-music.py` theo `MUSIC_PROVIDER` (**miễn phí**: freesound_cc0 — tìm nhạc CC0 có sẵn, `--query` từ khoá, tự cắt + fade, ghi nguồn vào Danh sách asset · gemini_lyria · replicate_music không dùng cho ads — model phi thương mại) · `self`: user tự chọn theo prompt. SFX: user tự chọn. Không tự tổng hợp nhạc bằng code cho bản thật. |
 | Script, storyboard (kèm ảnh minh hoạ), prompt, QC, dựng Remotion | Claude |
 
 Không báo giá / ước tính chi phí.
@@ -89,7 +89,7 @@ campaigns/[YYYY-MM]_[tên]/
 
 Seed nhân vật pass → copy thêm vào `_characters/<tên>/reference-images/<tên>-face-ref-01.png`. Chỉ upload Meta từ `outputs/final/`. Campaign xong → `_archive/`.
 
-**Campaign code:** `[BRAND]-[YYYY-MM]-[TÊN]` (mã brand: `KREIZI` · `KOLOR`).
+**Campaign code:** `[BRAND]-[YYYY-MM]-[TÊN]` (mã brand: `KREIZI` · `KOLOR` · `IMP`).
 ```
 Asset thô:  [code]_[asset-id]_[mô-tả]_v[n].[ext]
             A-01 ảnh tham chiếu · B-01 khung video · S01 scene

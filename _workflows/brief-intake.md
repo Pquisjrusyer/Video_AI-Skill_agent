@@ -80,10 +80,10 @@ Chưa có thời lượng → hỏi trước. Dựng 1 brief theo khung ở Nhá
 |---|---|
 | "Clip video làm bằng gì?" | **Qua API — Claude gen tự động** (fal.ai Kling v3 / Replicate: có credit dùng thử khi đăng ký · Google Veo: trả phí, thật nhất) → `api` · TopView / Higgsfield (MCP / API) · Google Flow — chỉ để test, bạn tự render |
 | "Giọng đọc (VO)?" (bỏ qua nếu video không có VO) | ElevenLabs (connector — **không có connector thì Claude dùng API key**, popup) · **Miễn phí qua API: Gemini TTS / Cloudflare** · OpenAI TTS · Tôi tự gen |
-| "Nhạc nền?" | ElevenLabs Music (connector hoặc API key — cần gói trả phí) · Replicate MusicGen (trả theo lượt, rẻ) · Tôi tự chọn |
+| "Nhạc nền?" | **Miễn phí: Freesound CC0** (Claude tự tìm nhạc có sẵn, dùng ads được, cắt đúng độ dài) · ElevenLabs Music (connector hoặc API key — gói trả phí) · Google Lyria 3 (AI gen, trả phí, key Gemini) · Tôi tự chọn (YouTube Audio Library / Pixabay Music) |
 
 Chọn API mà máy chưa có key → mở popup `sh _tools/pick-provider.sh video|voice|music "..."` (popup có **hướng dẫn lấy key từng bước + nút mở trang**). Key đã có (`key-status.py`) → không hỏi lại.
-Nói thật 1 dòng khi user hỏi "miễn phí": giọng đọc có nhà free thật; **video và nhạc chỉ có credit dùng thử**; ElevenLabs free không được dùng thương mại.
+Nói thật 1 dòng khi user hỏi "miễn phí": giọng đọc có nhà free thật; nhạc free = **thư viện CC0 có sẵn** (không phải AI gen); **video chỉ có credit dùng thử**; ElevenLabs free không được dùng thương mại.
 Claude chỉ gen clip ở **cổng 2b**, sau khi user duyệt ảnh khung đầu + danh sách clip (cổng 2a) — câu hỏi này chỉ để chuẩn bị key sớm.
 
 ## Sau Bước 0

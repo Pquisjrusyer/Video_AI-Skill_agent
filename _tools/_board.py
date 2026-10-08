@@ -90,7 +90,7 @@ WPS = 2.4   # tốc độ đọc ước tính (VO ElevenLabs ~2.4 từ/giây; UG
 
 def line_estimate(text, use_s, wps=WPS):
     """'5 từ ≈ 2.1s · cảnh dùng 3.5s ✅' — kiểm độ dài lời ngay từ kịch bản, chưa cần file âm thanh."""
-    n = len(re.findall(r"[A-Za-z0-9']+", text or ""))
+    n = len(re.findall(r"[\w']+", text or ""))  # \w: đếm đúng cả tiếng Việt có dấu
     if not n: return ""
     est = n / wps
     try: use = float(use_s)

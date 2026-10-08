@@ -7,6 +7,7 @@
 | Folder | Brand | Ngành | Tệp chính | Trạng thái context |
 |---|---|---|---|---|
 | `kreizi-beauty/` | Kreizi Beauty | Clean beauty — makeup + skincare | Nữ 18–40 (Lips/Makeup) · 45–65 (Skincare, chưa research) | Đầy đủ: brand-brief + target-audience + brand-assets |
+| `imp/` | IMP (kênh tin công nghệ) | Tin + giải thích công cụ AI | Dev / người làm sản phẩm VN (giả định) | Giả định: brand-brief. Thiếu target-audience + brand-assets |
 | `kolor-acrylic/` | Kolor Acrylic | Nail supply — acrylic powder, gel polish, tools | Nail tech US + DIY | Sơ bộ: brand-brief (dựng từ website). **Thiếu** target-audience + brand-assets |
 
 ## Cấu trúc mỗi brand
@@ -30,6 +31,7 @@ Xem trường **Brand** ở đầu `_products/<brand>/<sku>/product-brief.md`. K
 | `kolor-glossy-top-coat` | Kolor Acrylic |
 | `kolor-topcoat-gel-combo` | Kolor Acrylic |
 | `kolor-acrylic-cover-powder` | Kolor Acrylic |
+| `gemini-4-argon` (sản phẩm của Google, chủ đề video) | IMP |
 
 ## Thêm brand mới
 

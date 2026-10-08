@@ -36,7 +36,7 @@ VO space: giữ dải mid (~1–4kHz) thoáng; không melody chính đè lời
 Tail: [fade/ring-out x s]
 Instrumental only, no vocals.
 ```
-Nguồn: `MUSIC_TOOL=elevenlabs` → connector, không có connector thì `python3 _tools/gen-music.py --provider elevenlabs_music` · `MUSIC_TOOL=api` → `gen-music.py` (nhà theo `MUSIC_PROVIDER`) — dùng khối trên làm `--prompt`, `--seconds` = Duration · `MUSIC_TOOL=self` → prompt cho tool gen nhạc, HOẶC tiêu chí chọn bài royalty-free (kiểm license dùng cho ads), **người dùng tự gen/chọn → `outputs/audio/`** (VD 2026-06-LAUNCH_music_v1.mp3). Thêm vào Danh sách asset (Loại = nhạc).
+Nguồn: `MUSIC_TOOL=elevenlabs` → connector, không có connector thì `python3 _tools/gen-music.py --provider elevenlabs_music` · `MUSIC_TOOL=api` → `gen-music.py` (nhà theo `MUSIC_PROVIDER`) — dùng khối trên làm `--prompt`, `--seconds` = Duration; `freesound_cc0` (miễn phí) cần thêm `--query` 2–4 từ khoá tiếng Anh từ Mood/style (VD "bright pop loop"), nghe 5 ứng viên, `--pick N` đổi bài · `MUSIC_TOOL=self` → prompt cho tool gen nhạc, HOẶC tiêu chí chọn bài royalty-free (kiểm license dùng cho ads), **người dùng tự gen/chọn → `outputs/audio/`** (VD 2026-06-LAUNCH_music_v1.mp3). Thêm vào Danh sách asset (Loại = nhạc).
 
 ## C. SFX
 
